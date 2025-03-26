@@ -1,0 +1,8 @@
+/.idea
+/.venv
+/catalogs
+/__pycache__
+todo.txt
+reag test2.csv
+chemical_catalog.log
+reag testload_test.csv

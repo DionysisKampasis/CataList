@@ -1,0 +1,5 @@
+pandas==2.2.3
+PyQt5==5.15.11
+rdkit==2024.9.5
+PubChemPy==1.0.4
+requests==2.32.3
