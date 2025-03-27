@@ -1,7 +1,11 @@
 /.idea
 /.venv
+/.win_venv
 /catalogs
 /__pycache__
+/build
+/dist
+main.spec
 todo.txt
 reag test2.csv
 chemical_catalog.log

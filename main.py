@@ -27,10 +27,6 @@ except ImportError:
 REMOVE_COLUMNS = {"Supplier Code", "Lab (Shelf)", "Label", "H", "UUID"}
 CATALOGS_FOLDER = "catalogs"  # All catalogs are stored here
 
-logging.basicConfig(filename='chemical_catalog.log',
-                    level=logging.ERROR,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-
 DEFAULT_COLS = ["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail"]
 
 
@@ -77,10 +73,10 @@ def fetch_compound_info_by_cas(cas):
                     "Date Added": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "Detail": ""}
         else:
-            logging.error(f"PubChem did not return any compound for CAS {cas}")
+            print(f"PubChem did not return any compound for CAS {cas}")
             return None
     except Exception as e:
-        logging.error(f"Error retrieving compound info for CAS {cas}: {e}")
+        print(f"Error retrieving compound info for CAS {cas}: {e}")
         return None
 
 
@@ -660,7 +656,7 @@ class CatalogWidget(QWidget):
             else:
                 self.data.sort_values(by=sort_col, inplace=True, ascending=ascending, kind='mergesort')
         except Exception as e:
-            logging.error(f"Error sorting by {sort_col}: {e}")
+            print(f"Error sorting by {sort_col}: {e}")
             return
         self.data.reset_index(drop=True, inplace=True)
         self.populate_views()
@@ -685,7 +681,7 @@ class CatalogWidget(QWidget):
             if first_item:
                 first_item.setData(Qt.UserRole, self.data.iloc[row].to_dict())
         except Exception as e:
-            logging.error(f"Error updating data from table: {e}")
+            print(f"Error updating data from table: {e}")
 
 
 class DataLoaderThread(QThread):

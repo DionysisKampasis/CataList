@@ -1,4 +1,3 @@
-import logging
 from io import BytesIO
 
 from PyQt5.QtGui import QPixmap, QImage, QIcon
@@ -37,7 +36,7 @@ def generate_structure_image(smiles):
         return None
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
-        logging.error(f"RDKit could not parse SMILES: {smiles}")
+        print(f"RDKit could not parse SMILES: {smiles}")
         return None
     img = Draw.MolToImage(mol, size=(IMAGE_SIZE, IMAGE_SIZE))
     data = BytesIO()

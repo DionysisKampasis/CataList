@@ -1,4 +1,3 @@
-import logging
 import xml.etree.ElementTree as ET
 
 import pubchempy as pcp
@@ -18,16 +17,16 @@ def cas_to_smiles_cactus(cas):
         if smiles and smiles != "Structure not found":
             return smiles
         else:
-            logging.error(f"Cactus: SMILES not found for CAS '{cas}'")
+            print(f"Cactus: SMILES not found for CAS '{cas}'")
             return None
     except requests.exceptions.RequestException as e:
-        logging.error(f"Cactus: Error retrieving SMILES for CAS '{cas}': {e}")
+        print(f"Cactus: Error retrieving SMILES for CAS '{cas}': {e}")
         return None
 
 
 def cas_to_smiles_chemspider(cas):
     if not CHEMSPIDER_API_KEY:
-        logging.warning("ChemSpider API key not provided. Skipping ChemSpider.")
+        print("ChemSpider API key not provided. Skipping ChemSpider.")
         return None
     url = "http://www.chemspider.com/ChemicalStructure.asmx/GetStructureInfoFromCAS"
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -46,13 +45,13 @@ def cas_to_smiles_chemspider(cas):
             for element in root2.findall('.//SMILES'):
                 return element.text
         else:
-            logging.error(f"ChemSpider: No CSID found for CAS '{cas}'")
+            print(f"ChemSpider: No CSID found for CAS '{cas}'")
             return None
     except requests.exceptions.RequestException as e:
-        logging.error(f"ChemSpider: Error retrieving SMILES for CAS '{cas}': {e}")
+        print(f"ChemSpider: Error retrieving SMILES for CAS '{cas}': {e}")
         return None
     except ChemSpiderException as e:
-        logging.error(f"ChemSpider XML parsing error: {e}")
+        print(f"ChemSpider XML parsing error: {e}")
         return None
 
 
@@ -62,10 +61,10 @@ def cas_to_smiles_pubchem(cas):
         if compounds:
             return compounds.canonical_smiles
         else:
-            logging.warning(f"PubChem: SMILES not found for CAS '{cas}'")
+            print(f"PubChem: SMILES not found for CAS '{cas}'")
             return None
     except Exception as e:
-        logging.error(f"PubChem: Error retrieving SMILES for CAS '{cas}': {e}")
+        print(f"PubChem: Error retrieving SMILES for CAS '{cas}': {e}")
         return None
 
 
@@ -75,10 +74,10 @@ def fetch_smiles_pubchem(identifier, search_type):
         if compounds and compounds.canonical_smiles:
             return compounds.canonical_smiles
         else:
-            logging.warning(f"PubChem: No canonical SMILES found for {search_type} '{identifier}'")
+            print(f"PubChem: No canonical SMILES found for {search_type} '{identifier}'")
             return None
     except Exception as e:
-        logging.error(
+        print(
             f"PubChem: Error retrieving SMILES for identifier '{identifier}' and search type '{search_type}': {e}")
         return None
 
