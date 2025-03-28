@@ -177,7 +177,6 @@ class CustomListWidget(QListWidget):
     def mouseDoubleClickEvent(self, event):
         super().mouseDoubleClickEvent(event)
 
-
 # noinspection PyUnresolvedReferences
 class CatalogWidget(QWidget):
     def __init__(self, catalog_name, file_path, data=None, parent=None):
@@ -531,12 +530,15 @@ class CatalogWidget(QWidget):
                 QMessageBox.critical(self, "Error", f"Error importing CSV: {e}")
 
     def add_by_cas(self):
-        text, ok = QInputDialog.getText(self, "Add by CAS", "Enter one or more CAS numbers (comma separated):")
+        text, ok = QInputDialog.getMultiLineText(self, "Add by CAS",
+                                                 "Enter one or more CAS numbers (space/newline separated):")
         if ok and text:
-            cas_list = [cas.strip() for cas in text.split(",") if cas.strip()]
+            cas_list = [cas.strip() for cas in text.split() if cas.strip()]
+
             if not cas_list:
                 QMessageBox.warning(self, "Invalid Input", "No valid CAS numbers provided.")
                 return
+
             new_rows = []
             with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
                 future_to_cas = {executor.submit(fetch_compound_info_by_cas, cas): cas for cas in cas_list}
@@ -549,6 +551,7 @@ class CatalogWidget(QWidget):
                     else:
                         QMessageBox.warning(self, "CAS Error",
                                             f"Could not retrieve data for CAS: {future_to_cas[future]}")
+
             if new_rows:
                 new_df = pd.DataFrame(new_rows)
                 for col in ["NAME", "CAS", "SMILES", "Formula", "Category", "StructureImage", "Date Added", "Detail"]:
