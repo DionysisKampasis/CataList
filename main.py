@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import (
 
 from app_constants import *  # noqa
 from catalog import *
-from chemistry_functions import *
 from smiles_fetch import *
 
 # Optional PDF export:
@@ -25,45 +24,6 @@ def timer_function(func):
         return res
 
     return wrapper
-
-
-def fetch_compound_info_by_cas(cas):
-    try:
-        compounds = pcp.get_compounds(cas, 'name')
-        if compounds:
-            comp = compounds[0]
-            if hasattr(comp, "iupac_name") and comp.iupac_name:
-                name = comp.iupac_name
-            elif comp.synonyms:
-                name = comp.synonyms[0]
-            else:
-                name = "N/A"
-            smiles = get_smiles(name, cas)
-
-            # Only calculate formula if missing; if CSV supplies it, it'll be preserved.
-            def update_formula(row):
-                if pd.notnull(row.get("Formula")) and str(row.get("Formula")).strip() != "":
-                    return row["Formula"]
-                else:
-                    s = row.get("SMILES")
-                    if s and isinstance(s, str):
-                        return calculate_formula(s) or ""
-                    else:
-                        return ""
-
-            formula = ""  # We'll update in CatalogWidget if needed.
-            structure_image = generate_structure_image(smiles) if smiles else None
-            return {"NAME": name, "CAS": cas, "SMILES": smiles,
-                    "Formula": formula, "Category": categorize_molecule(smiles),
-                    "StructureImage": structure_image,
-                    "Date Added": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "Detail": ""}
-        else:
-            print(f"PubChem did not return any compound for CAS {cas}")
-            return None
-    except Exception as e:
-        print(f"Error retrieving compound info for CAS {cas}: {e}")
-        return None
 
 
 class CustomListWidget(QListWidget):

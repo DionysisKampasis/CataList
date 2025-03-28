@@ -1,6 +1,5 @@
 import concurrent.futures
 import os
-from datetime import datetime
 
 import pandas as pd
 from PyQt5 import QtWidgets
@@ -14,7 +13,6 @@ from PyQt5.QtWidgets import (
 )
 
 from app_constants import *  # noqa
-from chemistry_functions import *
 from smiles_fetch import *
 
 
@@ -107,8 +105,8 @@ class CatalogWidget(QWidget):
         self.btnAddColumn.clicked.connect(self.add_column)
         self.btnImportCSV = QPushButton("Import CSV")
         self.btnImportCSV.clicked.connect(self.import_csv)
-        self.btnAddCAS = QPushButton("Add by CAS")
-        self.btnAddCAS.clicked.connect(self.add_by_cas)
+        self.btnAddCAS = QPushButton("Add by identifier")
+        self.btnAddCAS.clicked.connect(self.add_by_identifier)
         self.btnSaveCatalog = QPushButton("Save Catalog")
         self.btnSaveCatalog.clicked.connect(lambda: self.save_catalog(silent=True))
         self.btnExportCatalog = QPushButton("Export Catalog")
@@ -369,34 +367,42 @@ class CatalogWidget(QWidget):
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Error importing CSV: {e}")
 
-    def add_by_cas(self):
-        text, ok = QInputDialog.getMultiLineText(self, "Add by CAS",
-                                                 "Enter one or more CAS numbers (space/newline separated):")
+    def add_by_identifier(self):
+        text, ok = QInputDialog.getMultiLineText(self, None,
+                                                 "Add by CAS, SMILES or IUPAC, accepts multiple identifiers, separated by newline or white space")
         if ok and text:
-            cas_list = [cas.strip() for cas in text.split() if cas.strip()]
+            # Split input into separate identifiers
+            identifier_list = [identifier.strip() for identifier in text.split() if identifier.strip()]
 
-            if not cas_list:
-                QMessageBox.warning(self, "Invalid Input", "No valid CAS numbers provided.")
+            if not identifier_list:
+                QMessageBox.warning(self, "Invalid Input", "No valid identifiers provided.")
                 return
 
             new_rows = []
             with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-                future_to_cas = {executor.submit(fetch_compound_info_by_cas, cas): cas for cas in cas_list}
-                for future in concurrent.futures.as_completed(future_to_cas):
+                # Submit all identifier lookups in parallel
+                future_to_id = {executor.submit(fetch_compound_info, identifier): identifier
+                                for identifier in identifier_list}
+
+                for future in concurrent.futures.as_completed(future_to_id):
+                    identifier = future_to_id[future]
                     result = future.result()
                     if result:
                         result["Date Added"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         result["Detail"] = ""
                         new_rows.append(result)
                     else:
-                        QMessageBox.warning(self, "CAS Error",
-                                            f"Could not retrieve data for CAS: {future_to_cas[future]}")
+                        QMessageBox.warning(self, "Lookup Error",
+                                            f"Could not retrieve data for identifier: {identifier}")
 
             if new_rows:
                 new_df = pd.DataFrame(new_rows)
+                # Ensure all expected columns exist
                 for col in ["NAME", "CAS", "SMILES", "Formula", "Category", "StructureImage", "Date Added", "Detail"]:
                     if col not in new_df.columns:
                         new_df[col] = ""
+
+                # Add new compounds to the catalog
                 self.data = pd.concat([self.data, new_df], ignore_index=True)
                 self.populate_views()
                 self.save_catalog(silent=True)

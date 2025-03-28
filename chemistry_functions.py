@@ -14,6 +14,44 @@ def calculate_formula(smiles):
     return None
 
 
+def get_cas(name, smiles):
+    if not name and not smiles:
+        return None
+
+    try:
+        # Try PubChem first by SMILES
+        if smiles:
+            compounds = pcp.get_compounds(smiles, 'smiles')
+        # Fall back to name if SMILES not available or didn't work
+        if (not smiles or not compounds) and name:
+            compounds = pcp.get_compounds(name, 'name')
+
+        if compounds:
+            comp = compounds[0]
+            if hasattr(comp, "xref") and comp.xref.get('cas'):
+                return comp.xref['cas']
+    except Exception as e:
+        print(f"Error retrieving CAS for {name or smiles}: {e}")
+
+    return None
+
+
+def get_name(smiles):
+    if not smiles:
+        return None
+    try:
+        compounds = pcp.get_compounds(smiles, 'smiles')
+        if compounds:
+            comp = compounds[0]
+            if hasattr(comp, "iupac_name") and comp.iupac_name:
+                return comp.iupac_name
+            elif hasattr(comp, "synonyms") and comp.synonyms:
+                return comp.synonyms[0]
+    except Exception as e:
+        print(f"Error retrieving name for SMILES {smiles}: {e}")
+    return None
+
+
 def generate_structure_image(smiles):
     if not smiles:
         return None
