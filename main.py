@@ -1,5 +1,3 @@
-import time
-
 from PyQt5.QtWidgets import (
     QMainWindow, QSplitter
 )
@@ -15,18 +13,8 @@ except ImportError:
     FPDF = None
 
 
-def timer_function(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        res = func(*args, **kwargs)
-        end = time.time()
-        print(f"[TIMING] {func.__name__} took {end - start:.4f} sec.")
-        return res
-
-    return wrapper
-
-
 class CustomListWidget(QListWidget):
+
     def __init__(self, main_window, parent=None):
         super().__init__(parent)
         self.main_window = main_window
@@ -65,6 +53,7 @@ class CustomListWidget(QListWidget):
 
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chemical Catalog Manager")
@@ -80,7 +69,7 @@ class MainWindow(QMainWindow):
         self.sidebar = QWidget()
         sb_layout = QVBoxLayout(self.sidebar)
         self.btnNewCatalog = QPushButton("New Catalog")
-        self.btnNewCatalog.clicked.connect(self.create_new_catalog)
+        self.btnNewCatalog.clicked.connect(lambda: self.create_new_catalog())  # Changed this line
         sb_layout.addWidget(self.btnNewCatalog)
         self.listCatalogs = CustomListWidget(self)
         self.listCatalogs.itemDoubleClicked.connect(self.open_catalog_tab)

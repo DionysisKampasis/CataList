@@ -5,96 +5,132 @@ from datetime import *
 import pubchempy as pcp
 import requests
 
+from benchmark import timer_function  # noqa
 from chemistry_functions import *
+
+# Compile the regex patterns once at module level
+CAS_PATTERN_1 = re.compile(r"^\d{2,7}-\d{2}-\d$")
+CAS_PATTERN_2 = re.compile(r"^\d{10}$")
 
 CACTUS_TIMEOUT = 15
 CHEMSPIDER_API_KEY = None
 SMILES_CACHE = {}
 
 
-def fetch_compound_info(input_data):
-    # Initialize default values
-    name = None
-    cas = None
-    smiles = None
-    formula = None
-    structure_image = None
-
-    # Determine input type
-    if not input_data:
-        return None
-
-    # Case 1: CAS number (either standard format or numeric)
-    if re.match(r"^\d{2,7}-\d{2}-\d$", input_data) or re.match(r"^\d{10}$", input_data):
-        cas = input_data
-        try:
-            compounds = pcp.get_compounds(cas, 'name')
-            if compounds:
-                comp = compounds[0]
-                name = comp.iupac_name if hasattr(comp, "iupac_name") and comp.iupac_name else \
-                    comp.synonyms[0] if hasattr(comp, "synonyms") and comp.synonyms else "N/A"
-                smiles = comp.canonical_smiles if hasattr(comp, "canonical_smiles") else None
-        except Exception as e:
-            print(f"Error retrieving compound from PubChem for CAS {cas}: {e}")
-
-    # Case 2: SMILES string (basic check)
-    elif Chem.MolFromSmiles(input_data) is not None:
-        smiles = input_data
-        try:
-            compounds = pcp.get_compounds(smiles, 'smiles')
-            if compounds:
-                comp = compounds[0]
-                name = comp.iupac_name if hasattr(comp, "iupac_name") and comp.iupac_name else \
-                    comp.synonyms[0] if hasattr(comp, "synonyms") and comp.synonyms else "N/A"
-                if hasattr(comp, "xref") and comp.xref.get('cas'):
-                    cas = comp.xref['cas']
-        except Exception as e:
-            print(f"Error retrieving compound from PubChem for SMILES {smiles}: {e}")
-
-    # Case 3: IUPAC name or other chemical name
-    else:
-        name = input_data
-        try:
-            compounds = pcp.get_compounds(name, 'name')
-            if compounds:
-                comp = compounds[0]
-                # Get the canonical IUPAC name if available
-                canonical_name = comp.iupac_name if hasattr(comp, "iupac_name") and comp.iupac_name else None
-                # Use the canonical name if it exists, otherwise keep the input name
-                name = canonical_name if canonical_name else name
-                smiles = comp.canonical_smiles if hasattr(comp, "canonical_smiles") else None
-                if hasattr(comp, "xref") and comp.xref.get('cas'):
-                    cas = comp.xref['cas']
-        except Exception as e:
-            print(f"Error retrieving compound from PubChem for name {name}: {e}")
-
-    # If we still don't have SMILES, try other sources
-    if not smiles and (cas or name):
-        smiles = get_smiles(name, cas)
-
-    # Calculate formula and generate image if we have SMILES
-    if smiles:
-        formula = calculate_formula(smiles)
-        structure_image = generate_structure_image(smiles)
-
-    # Final attempt to get missing data
-    if name and not cas:
-        cas = get_cas(name, smiles) if smiles else None
-    if not name and smiles:
-        name = get_name(smiles)
-
+# Initialize a compound data dictionary with default values
+def initialize_compound_data():
     return {
-        "NAME": name,
-        "CAS": cas,
-        "SMILES": smiles,
-        "Formula": formula,
-        "Category": categorize_molecule(smiles) if smiles else [],
-        "StructureImage": structure_image,
+        "NAME": None,
+        "CAS": None,
+        "SMILES": None,
+        "Formula": None,
+        "Category": [],
+        "StructureImage": None,
         "Date Added": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "Detail": ""
     }
 
 
+@timer_function
+def is_valid_cas(input_data):
+    return bool(CAS_PATTERN_1.match(input_data)) or bool(CAS_PATTERN_2.match(input_data))
+
+
+@timer_function
+def is_valid_smiles(input_data):
+    return Chem.MolFromSmiles(input_data) is not None
+
+
+@timer_function
+def fetch_compound_by_cas(cas, compound_data):
+    try:
+        compounds = pcp.get_compounds(cas, 'name')
+        if compounds:
+            comp = compounds[0]
+            compound_data["NAME"] = (comp.iupac_name if hasattr(comp, "iupac_name") and comp.iupac_name else
+                                     comp.synonyms[0] if hasattr(comp, "synonyms") and comp.synonyms else "N/A")
+            compound_data["SMILES"] = comp.canonical_smiles if hasattr(comp, "canonical_smiles") else None
+    except Exception as e:
+        print(f"Error retrieving compound from PubChem for CAS {cas}: {e}")
+    return compound_data
+
+
+@timer_function
+def fetch_compound_by_smiles(smiles, compound_data):
+    """Fetch compound information using SMILES string."""
+    try:
+        compounds = pcp.get_compounds(smiles, 'smiles')
+        if compounds:
+            comp = compounds[0]
+            compound_data["NAME"] = (comp.iupac_name if hasattr(comp, "iupac_name") and comp.iupac_name else
+                                     comp.synonyms[0] if hasattr(comp, "synonyms") and comp.synonyms else "N/A")
+            if hasattr(comp, "xref") and comp.xref.get('cas'):
+                compound_data["CAS"] = comp.xref['cas']
+    except Exception as e:
+        print(f"Error retrieving compound from PubChem for SMILES {smiles}: {e}")
+    return compound_data
+
+
+@timer_function
+def fetch_compound_by_name(name, compound_data):
+    """Fetch compound information using chemical name."""
+    try:
+        compounds = pcp.get_compounds(name, 'name')
+        if compounds:
+            comp = compounds[0]
+            canonical_name = comp.iupac_name if hasattr(comp, "iupac_name") and comp.iupac_name else None
+            compound_data["NAME"] = canonical_name if canonical_name else name
+            compound_data["SMILES"] = comp.canonical_smiles if hasattr(comp, "canonical_smiles") else None
+            if hasattr(comp, "xref") and comp.xref.get('cas'):
+                compound_data["CAS"] = comp.xref['cas']
+    except Exception as e:
+        print(f"Error retrieving compound from PubChem for name {name}: {e}")
+    return compound_data
+
+
+@timer_function
+def supplement_compound_data(compound_data):
+    """Supplement missing compound data from alternative sources."""
+    if not compound_data["SMILES"] and (compound_data["CAS"] or compound_data["NAME"]):
+        compound_data["SMILES"] = get_smiles(compound_data["NAME"], compound_data["CAS"])
+
+    if compound_data["SMILES"]:
+        compound_data["Formula"] = calculate_formula(compound_data["SMILES"])
+        compound_data["StructureImage"] = generate_structure_image(compound_data["SMILES"])
+        compound_data["Category"] = categorize_molecule(compound_data["SMILES"])
+
+    if compound_data["NAME"] and not compound_data["CAS"] and compound_data["SMILES"]:
+        compound_data["CAS"] = get_cas(compound_data["NAME"], compound_data["SMILES"])
+
+    if not compound_data["NAME"] and compound_data["SMILES"]:
+        compound_data["NAME"] = get_name(compound_data["SMILES"])
+
+    return compound_data
+
+
+@timer_function
+def fetch_compound_info(input_data):
+    """Main function to fetch compound information from various identifiers."""
+    if not input_data:
+        return None
+
+    compound_data = initialize_compound_data()
+
+    if is_valid_cas(input_data):
+        compound_data["CAS"] = input_data
+        compound_data = fetch_compound_by_cas(input_data, compound_data)
+    elif is_valid_smiles(input_data):
+        compound_data["SMILES"] = input_data
+        compound_data = fetch_compound_by_smiles(input_data, compound_data)
+    else:
+        compound_data["NAME"] = input_data
+        compound_data = fetch_compound_by_name(input_data, compound_data)
+
+    compound_data = supplement_compound_data(compound_data)
+    return compound_data
+
+
+@timer_function
 def fetch_compound_info_by_cas(cas):
     try:
         compounds = pcp.get_compounds(cas, 'name')
@@ -109,6 +145,7 @@ def fetch_compound_info_by_cas(cas):
             smiles = get_smiles(name, cas)
 
             # Only calculate formula if missing; if CSV supplies it, it'll be preserved.
+            @timer_function
             def update_formula(row):
                 if pd.notnull(row.get("Formula")) and str(row.get("Formula")).strip() != "":
                     return row["Formula"]
@@ -134,6 +171,7 @@ def fetch_compound_info_by_cas(cas):
         return None
 
 
+@timer_function
 def cas_to_smiles_cactus(cas):
     url = f"https://cactus.nci.nih.gov/chemical/structure/{cas}/smiles"
     try:
@@ -150,6 +188,7 @@ def cas_to_smiles_cactus(cas):
         return None
 
 
+@timer_function
 def cas_to_smiles_chemspider(cas):
     if not CHEMSPIDER_API_KEY:
         print("ChemSpider API key not provided. Skipping ChemSpider.")
@@ -181,6 +220,7 @@ def cas_to_smiles_chemspider(cas):
         return None
 
 
+@timer_function
 def cas_to_smiles_pubchem(cas):
     try:
         compounds = pcp.get_compounds(identifier=cas, search_type='name')[0]
@@ -194,6 +234,7 @@ def cas_to_smiles_pubchem(cas):
         return None
 
 
+@timer_function
 def fetch_smiles_pubchem(identifier, search_type):
     try:
         compounds = pcp.get_compounds(identifier=identifier, search_type=search_type)[0]
@@ -208,6 +249,7 @@ def fetch_smiles_pubchem(identifier, search_type):
         return None
 
 
+@timer_function
 def get_smiles(name, cas):
     if isinstance(name, str) and name.startswith('CID'):
         return fetch_smiles_pubchem(name, 'inchikey')
@@ -223,9 +265,11 @@ def get_smiles(name, cas):
         return smiles
 
 
+@timer_function
 def get_smiles_from_cache(identifier):
     return SMILES_CACHE.get(identifier)
 
 
+@timer_function
 def set_smiles_in_cache(identifier, smiles):
     SMILES_CACHE[identifier] = smiles

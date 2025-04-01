@@ -17,11 +17,14 @@ from smiles_fetch import *
 
 
 class CatalogWidget(QWidget):
+
     def __init__(self, catalog_name, file_path, data=None, parent=None):
         super().__init__(parent)
         self.catalog_name = catalog_name
         self.file_path = file_path
         default_cols = DEFAULT_COLS
+
+        # Initialize data
         if data is None or data.empty:
             self.data = pd.DataFrame(columns=default_cols)
         else:
@@ -29,6 +32,8 @@ class CatalogWidget(QWidget):
             for col in default_cols:
                 if col not in self.data.columns:
                     self.data[col] = ""
+
+        # Data cleanup
         if "Details" in self.data.columns:
             self.data.drop(columns=["Details"], inplace=True)
         if "Detail" not in self.data.columns:
@@ -36,6 +41,8 @@ class CatalogWidget(QWidget):
         if "Supplier" in self.data.columns:
             self.data["Detail"] = "Supplier: " + self.data["Supplier"].astype(str)
             self.data.drop(columns=["Supplier"], inplace=True)
+
+        # Process SMILES data
         if "SMILES" in self.data.columns:
             self.data["SMILES"] = self.data.apply(
                 lambda r: r["SMILES"] if r["SMILES"] != "" else get_smiles(r.get("NAME"), r.get("CAS")),
@@ -59,10 +66,15 @@ class CatalogWidget(QWidget):
             self.data["StructureImage"] = self.data["SMILES"].apply(
                 lambda s: generate_structure_image(s) if s and isinstance(s, str) else None
             )
+
         self.last_sorted_column = None
         self.last_sort_order = True
         self._updating_table = False
+
+        # Initialize UI
         self.initUI()
+
+        # Now that UI (including table) is initialized, populate it
         self.populate_views()
 
     def initUI(self):
@@ -534,6 +546,7 @@ class CatalogWidget(QWidget):
 
 
 class CatalogModel:
+
     def __init__(self):
         self.catalog_files = {}  # catalog name -> file path
         self.load_existing_catalogs()
@@ -569,6 +582,7 @@ class CatalogModel:
 
 
 class CatalogController:
+
     def __init__(self, model, view):
         self.model = model
         self.view = view
@@ -613,6 +627,7 @@ class CustomTableWidget(QTableWidget):
 
 
 class EditableHeaderView(QHeaderView):
+
     def __init__(self, orientation, parent=None, delete_callback=None):
         super().__init__(orientation, parent)
         self.delete_callback = delete_callback

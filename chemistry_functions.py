@@ -5,8 +5,10 @@ from rdkit import Chem
 from rdkit.Chem import Draw, rdMolDescriptors
 
 from app_constants import *  # noqa
+from benchmark import timer_function
 
 
+@timer_function
 def calculate_formula(smiles):
     mol = Chem.MolFromSmiles(smiles)
     if mol:
@@ -14,6 +16,7 @@ def calculate_formula(smiles):
     return None
 
 
+@timer_function
 def get_cas(name, smiles):
     if not name and not smiles:
         return None
@@ -36,6 +39,7 @@ def get_cas(name, smiles):
     return None
 
 
+@timer_function
 def get_name(smiles):
     if not smiles:
         return None
@@ -52,6 +56,7 @@ def get_name(smiles):
     return None
 
 
+@timer_function
 def generate_structure_image(smiles):
     if not smiles:
         return None
@@ -67,6 +72,7 @@ def generate_structure_image(smiles):
     return QPixmap.fromImage(qt_img)
 
 
+@timer_function
 def categorize_molecule(smiles):
     if not smiles:
         return []
