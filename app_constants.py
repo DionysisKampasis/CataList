@@ -15,8 +15,8 @@ CATEGORY_SMARTS = {
     "Boronic acids/esters": "[$([B](O)(O)),$([B](OC(C)(C)C)(OC(C)(C)C))]"
 }
 
-IMAGE_SIZE = 512
+IMAGE_SIZE = 1024
 
 CATALOGS_FOLDER = "catalogs"  # All catalogs are stored here
-DEFAULT_COLS = ["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail"]
+DEFAULT_COLS = ["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail", "Supplier"]
 REMOVE_COLUMNS = {"Supplier Code", "Lab (Shelf)", "Label", "H", "UUID"}

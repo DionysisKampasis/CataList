@@ -1,7 +1,6 @@
 /.idea
 /.venv
 /.win_venv
-/catalogs
 /__pycache__
 /build
 /dist

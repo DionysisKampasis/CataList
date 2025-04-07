@@ -33,14 +33,7 @@ class CatalogWidget(QWidget):
                 if col not in self.data.columns:
                     self.data[col] = ""
 
-        # Data cleanup
-        if "Details" in self.data.columns:
-            self.data.drop(columns=["Details"], inplace=True)
-        if "Detail" not in self.data.columns:
-            self.data["Detail"] = ""
-        if "Supplier" in self.data.columns:
-            self.data["Detail"] = "Supplier: " + self.data["Supplier"].astype(str)
-            self.data.drop(columns=["Supplier"], inplace=True)
+
 
         # Process SMILES data
         if "SMILES" in self.data.columns:
@@ -371,8 +364,7 @@ class CatalogWidget(QWidget):
                     lambda s: generate_structure_image(s) if s and isinstance(s, str) else None)
                 if "Date Added" not in df.columns:
                     df["Date Added"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                if "Detail" not in df.columns:
-                    df["Detail"] = ""
+            
                 self.data = pd.concat([self.data, df], ignore_index=True)
                 self.populate_views()
                 self.save_catalog(silent=True)
@@ -391,7 +383,7 @@ class CatalogWidget(QWidget):
                 return
 
             new_rows = []
-            with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
                 # Submit all identifier lookups in parallel
                 future_to_id = {executor.submit(fetch_compound_info, identifier): identifier
                                 for identifier in identifier_list}
@@ -410,7 +402,7 @@ class CatalogWidget(QWidget):
             if new_rows:
                 new_df = pd.DataFrame(new_rows)
                 # Ensure all expected columns exist
-                for col in ["NAME", "CAS", "SMILES", "Formula", "Category", "StructureImage", "Date Added", "Detail"]:
+                for col in ["NAME", "CAS", "SMILES", "Formula", "Category", "StructureImage", "Date Added", "Supplier", "Detail"]:
                     if col not in new_df.columns:
                         new_df[col] = ""
 
@@ -562,7 +554,7 @@ class CatalogModel:
 
     def create_new_catalog(self, name):
         path = os.path.join(CATALOGS_FOLDER, f"{name}.json")
-        df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail"])
+        df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added","Supplier", "Detail"])
         df.to_json(path, orient="records", indent=2)
         self.catalog_files[name] = path
         return path, df
@@ -573,11 +565,11 @@ class CatalogModel:
             try:
                 df = pd.read_json(path, orient="records")
                 if df.empty:
-                    df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail"])
+                    df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
             except Exception:
-                df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail"])
+                df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
         else:
-            df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Detail"])
+            df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
         return path, df
 
 

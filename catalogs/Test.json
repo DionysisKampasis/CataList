@@ -1,0 +1,619 @@
+[
+  {
+    "NAME":"Sodium citrate tribasic dihydrate",
+    "CAS":"03-04-32",
+    "SMILES":null,
+    "Formula":"Na3C6H5O7 x 2 H2O",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 1000g  Qta 1000  g        Owner     Tecnici didattici bio       samanta.paltrinieri@unibo.it 0516354103                                       Physical Form Solid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphocreatine disodium salt hydrate",
+    "CAS":"19333-65-4",
+    "SMILES":"CN(CC(=O)O[P]([O-])([O-])=O)C(N)=[NH2+]",
+    "Formula":"C4H8N3O5PNa2\u00a0\u00b7 x H2O",
+    "Category":[
+      "Primary amines",
+      "Tertiary amines",
+      "Heterocyclic",
+      "Linear",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 100mg  Qta 100  mg        Owner     Monti       monia.bentivogli@unibo.it                                        Physical Form Solid,",
+    "Supplier":"-- Other --",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phospholipids metodo trinder",
+    "CAS":"",
+    "SMILES":"<!DOCTYPE html>\n\n<html>\n\n<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text\/html; charset=utf-8\" \/>\n\t<!--<meta http-equiv=\"X-UA-Compatible\" content=\"chrome=1\">-->\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7, IE=9\" >\n\t<title>NCI\/CADD Chemical Identifier Resolver<\/title>\n\t<meta name=\"robots\" content=\"index, follow\" \/>\n\t<meta name=\"author\" content=\"NCICADD Group, National Cancer Institute\" \/>\n\t<meta name=\"author-personal\" content=\"Markus Sitzmann, Igor Filippov, Marc Nicklaus\" \/>\n\t<meta name=\"author-mail\" content=\"webmaster@https:\/\/cactus.nci.nih.gov\"\/>\n\t<meta name=\"keywords\" content=\"chemical identifier, resolver, InChI, InChIKey, SMILES, GIF, database, chemical names, inchikey resolver, InChIKey resolver\" \/>\n\t<meta name=\"description\" content=\"Chemical Identifier Resolver\" \/>\n\t\n\t<link rel=\"stylesheet\" href=\"\/style\/carbon.css\" type=\"text\/css\" media=\"screen,projection\" \/>\n\t<!--<link rel=\"stylesheet\" href=\"\/style\/browser.css\" type=\"text\/css\" media=\"screen,projection\">-->\n        <!--<script src=\"\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/3.6.0\/jquery.min.js\"><\/script>-->\n        <!--<link rel=\"stylesheet\" href=\"\/\/ajax.aspnetcdn.com\/ajax\/jquery.ui\/1.13.2\/themes\/black-tie\/jquery-ui.css\">-->\n        <link rel=\"stylesheet\" href=\"\/\/ajax.aspnetcdn.com\/ajax\/jquery.ui\/1.13.2\/themes\/black-tie\/jquery-ui.css\">\n\t<link rel=\"icon\" href=\"\/image\/favicon.ico\"  type=\"image\/x-icon\"\/>\n\t\n\t\n<script type=\"text\/javascript\" src=\"https:\/\/cactus.nci.nih.gov\/js\/chemwriter.js\"><\/script>\n<link rel=\"stylesheet\" href=\"https:\/\/cactus.nci.nih.gov\/style\/chemwriter-mod.css\" type=\"text\/css\" media=\"screen,projection\" \/>\n\n<script type=\"text\/javascript\" src=\"https:\/\/cactus.nci.nih.gov\/js\/ChemDoodleWeb-libs.js\"><\/script>\n<script type=\"text\/javascript\" src=\"https:\/\/cactus.nci.nih.gov\/js\/ChemDoodleWeb.js\"><\/script>\n\n<script src=\"\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/3.6.0\/jquery.min.js\"><\/script>\n<script src=\"\/\/ajax.aspnetcdn.com\/ajax\/jquery.ui\/1.13.2\/jquery-ui.min.js\"><\/script>\n\n<!--\n<script type=\"text\/javascript\" src=\"https:\/\/www.google.com\/jsapi\"><\/script>\n<script type=\"text\/javascript\">google.load(\"jquery\", \"3.6.0\");<\/script>\n<script type=\"text\/javascript\">google.load(\"jqueryui\", \"1.8.17\");<\/script>\n<script type=\"text\/javascript\" src=\"https:\/\/cactus.nci.nih.gov\/js\/jquery.form.js\"><\/script>\n-->\n\n\t<script type=\"text\/javascript\" id=\"_fed_an_ua_tag\" src=\"https:\/\/dap.digitalgov.gov\/Universal-Federated-Analytics-Min.js?agency=HHS&subagency=NCI\"><\/script>\n<\/head>\n\n<body>\n<div class=\"Header\">\n\n\t<div class=\"CenterArea\" id=\"HeaderCenterArea\">\n\t<div id=\"HomeBorder\"><a href=\"\/\">https:\/\/cactus.nci.nih.gov<\/a><\/div>\n\t<div><h1>Chemical Identifier Resolver<\/h1><\/div>\n\n\t<\/div>\n\n<\/div>\n\n<div class=\"Ribbon\">\n\n\t<div class=\"CenterArea\" id=\"RibbonCenterArea\">\n\t\n\t<div class=\"Search\">\n<form id=\"submit-form\" enctype=\"multipart\/form-data\">\n\t\n\t<table>\n\n\t\t<!-- row -->\n\t\t<tr>\n\t\t\t<th class=\"LeftColumn\">\n\t\t\t\t<label for=\"id_identifier\">Structure Identifier:<\/label>\n\t\t\t<\/th>\n\t\t\t<td class=\"MiddleColumn FirstRow\" id=\"form_identifier_field\">\n\t\t\t\t<div id=\"input_editor_box\">\n\t\t\t\t\t<div id=\"input_box\"><input id=\"id_identifier\" name=\"identifier\" size=\"20\" type=\"text\" value=\"smiles\" \/><\/div>\n\t\t\t\t<\/div>\n\t\t\t<\/td>\n\t\t\t<td class=\"RightColumn FirstRow\" id=\"editor_button_field\">\n\t\t\t\t<div id=\"editor-button-pane\" editor_for=\"id_identifier\"><\/div>\n\t\t\t<\/td>\n\t\t<\/tr>\n\n\t\t<!-- row -->\n\t\t<tr>\n\t\t\t<th class=\"LeftColumn\">\n\t\t\t\t<label for=\"id_representation\">convert to:<\/label>\n\t\t\t<\/th>\n\t\t\t<td class=\"MiddleColumn\">\n\t\t\t\t<div id=\"representation_field\"><select id=\"id_representation\" name=\"representation\">\n<option value=\"stdinchikey\" selected=\"selected\">Standard InChIKey<\/option>\n<option value=\"stdinchi\">Standard InChI<\/option>\n<option value=\"smiles\">SMILES<\/option>\n<option value=\"ficts\">FICTS Identifier<\/option>\n<option value=\"ficus\">FICuS Identifier<\/option>\n<option value=\"uuuuu\">uuuuu Identifier<\/option>\n<option value=\"hashisy\">Cactvs HASHISY<\/option>\n<option value=\"file?format=sdf\">SD File<\/option>\n<option value=\"names\">Names<\/option>\n<option value=\"iupac_name\">IUPAC Name<\/option>\n<option value=\"cas\">CAS Registry Number<\/option>\n<option value=\"chemspider_id\">ChemSpider ID<\/option>\n<option value=\"image\">GIF Image<\/option>\n<option value=\"twirl\">TwirlyMol (3D)<\/option>\n<option value=\"mw\">Molecular Weight<\/option>\n<option value=\"formula\">Chemical Formula<\/option>\n<option value=\"h_bond_donor_count\">Number of Hydrogen Bond Donors<\/option>\n<option value=\"h_bond_acceptor_count\">Number of Hydrogen Bond Acceptors<\/option>\n<option value=\"h_bond_center_count\">Number of Hydrogen Bond Acceptors and Donors<\/option>\n<option value=\"rule_of_5_violation_count\">Number of Rule of 5 Violations<\/option>\n<option value=\"rotor_count\">Number of Freely Rotatable Bonds<\/option>\n<option value=\"effective_rotor_count\">Number of Effectively Rotatable Bonds<\/option>\n<option value=\"ring_count\">Number of Rings<\/option>\n<option value=\"ringsys_count\">Number of Ring Systems<\/option>\n<\/select><\/div>\n\t\t\t<\/td>\n\t\t\t<td>\n\t\t\t<\/td>\n\t\t<\/tr>\n\t\t\n\t\t<!-- row -->\n\t\t<tr> \n\t\t\t<th class=\"LeftColumn\"><\/th>\n\t\t\t<td class=\"MiddleColumn\">\n\t\t\t\t<button type=\"submit\" id=\"submit-button\" value=\"Submit\" \/>Submit<\/button>\n\t\t\t<\/td>\n\t\t\t<td>\n\t\t\t<\/td>\n\t\t<\/tr>\n\n\t<\/table>\n\n<\/form>\n<\/div>\n\n<script type=\"text\/javascript\">\n$(document).ready(function() {\n\n    \/\/$(\"#submit-form\").ajaxForm();\n\n\t$('#getting_started_link').click(function (){\n\t\t$('#getting_started_response_box_content').hide();\n\t\t$('#getting_started_response_box_text').fadeIn();\n\t});\n\n\t$('#submit-button').button().click(function() {\n\t\tvar string = $('#id_identifier').val();\n\t\tvar representation = $('#id_representation').val();\n\t\tvar url = '\/chemical\/structure\/' + encodeURI(string) + '\/' + representation;\n\t\tif (representation == \"twirl\") {\n\t\t\tvar call_url = url + '?div_id=getting_started_response_box_data';\n\t\t} else if (representation == \"image\") {\n\t\t\tvar call_url = url + '?width=278&height=278';\n\t\t} else {\n\t\t\tvar call_url = url;\n\t\t}\n\t\tvar show_url = 'https:\/\/cactus.nci.nih.gov' + url;\n\t\tvar url_anchor = '<a href=\\\"' + show_url + '\\\">' + show_url + '<\/a>';\n\t\tif (!string) {\n\t\t\t$('#id_identifier').css({'background-color': '#fef0f0'});\n\t\t\t\/\/$('#id_identifier').labelify({ text: \"test\"});\n\t\t\t$('#id_identifier').focus();\n\t\t\tsetInterval(function () {\n\t\t\t\t$('#id_identifier').css({'background-color': 'white'});\n\t\t\t}, 2000);\n\t\t\treturn false;\n\t\t}\n\t\t$.ajax({\n\t\t\turl: call_url,\n\t\t\tbeforeSend: function(data) {\n\t\t\t\t$('#getting_started_response_box_text').hide();\n\t\t\t\t$('#getting_started_response_box_description').text('');\n\t\t\t\t$('#getting_started_url').text('');\n\t\t\t\t$('#getting_started_response_box_data').html('<img src=\"\/image\/load.gif\" \/>');\n\t\t\t\t$('#getting_started_response_box_content').show();\n\t\t\t},\n\t\t\tsuccess: function(data) {\n\t\t\t\tif (representation == \"image\") {\n\t\t\t\t\t$('#getting_started_url').html(url_anchor);\n\t\t\t\t\t$('#getting_started_response_box_data').html('<img src=\\\"' + call_url + '\\\"\/>')\n\t\t\t\t} else if (representation == \"twirl\") {\n\t\t\t\t\t$('#getting_started_url').html(url_anchor);\n\t\t\t\t\t$('#getting_started_response_box_description').text('Click and drag to rotate (left mouse button), zoom\/twist (right button) or translate (middle button).');\n\t\t\t\t\t$('#getting_started_response_box_data').text('');\n                                        \/\/$('#getting_started_response_box_data').html('<iframe id=\"widget\" height=\"320\" width=\"860\" style=\"border:none;\" src=\"' + show_url + '\"\/>');\n\t\t\t\t} else {\n\t\t\t\t\t$('#getting_started_url').html(url_anchor);\n\t\t\t\t\t$('#getting_started_response_box_data').html('<pre>' + data + '<\/pre>')\n\t\t\t\t}\n\t\t\t},\n\t\t\terror: function(data) {\n\t\t\t\t$('#getting_started_response_box_data').html('<div class=\"ErrorMessage\">Sorry, your structure identifier could not be resolved (the request returned a HTML 404 status message)<\/div>')\n\t\t\t}\n\t\t});\n\t});\n\t\n\t$('#submit-form').submit(function() {\n\t\t\/\/$(this).ajaxSubmit();\n\t\treturn false;\n\t});\n\n});\n<\/script>\n\n\n<div id=\"editor-widget\">\n\t<div id=\"editor-widget-dialog\" title=\"Structure Editor\">\n\t\t<div id=\"editor-box\" style=\"height:400px;position:relative;\">\n\t\t<\/div>\n\t\t<div id=\"editor-message-pane\" style=\"z-index:501;position:absolute;color:white;background-color:black;left:200px;top:200px;margin:10px;\">\n\t\t\t<div style=\"padding:10px;width:200px\">\n\t\t\t\t<div style=\"float:right\" id=\"progress-wheel\"><img src=\"\/image\/ajax-wheel-white.gif\" \/><\/div>\n\t\t\t\t<div style=\"padding-left:10px\" id=\"progress-status\"><\/div>\n\t\t\t<\/div>\n\t\t<\/div>\n\t<\/div>\n<\/div>\n\n<!--\n<script type=\"text\/javascript\" language=\"javascript\" src=\"\/js\/jsme\/jsme.nocache.js\"><\/script>\n<script>\n    function jsmeOnLoad() {\n        loadJmeFile();\n        loadMolFile();    }\n<\/script>\n-->\n<script type=\"text\/javascript\">\n\n\tfunction editor_message(string, interval) {\n\t\tvar editor_status_message = $('#editor-widget-dialog').find('#progress-status');\n\t\tvar editor_status_wheel = $('#editor-widget-dialog').find('#progress-wheel');\n\t\tvar editor_message_pane = $('#editor-message-pane');\n\t\tif (string) {\n\t\t\teditor_message_pane.show();\n\t\t\teditor_status_message.text(string);\n\t\t\tif (interval) {\n\t\t\t\tsetInterval(function() {\n\t\t\t\t\teditor_status_message.text('');\n\t\t\t\t\teditor_message_pane.hide();\n\t\t\t\t}, interval);\n\t\t\t}\n\t\t} else {\n\t\t\teditor_message_pane.hide();\n\t\t\teditor_status_message.text('');\n\t\t}\n\t}\n\n\tfunction prepare_jme(identifier) {\n\n\/\/\t\tjsmeApplet = new JSApplet.JSME(\"editor-box\");\n\n\/\/\t\teditor_dialog_button_state('Done', 'disable');\n\/\/\t\t$('#editor-box').empty();\n\/\/\t\tvar jme = '<div style=\"padding-left:45px\"><applet name=\"JME\" code=\"JME.class\" archive=\"\/editor\/JME.jar\" width=520 height=400><param name=\"options\" value=\"hides nohydrogens autoez nocanonize norbutton\"><\/param><\/applet><\/div>'\n\/\/\t\tif (identifier) {\n\/\/\t\t\tvar url =  '\/chemical\/structure\/' + encodeURI(identifier) + '\/file?format=jme';\n\/\/\t\t\t$.ajax({\n\/\/\t\t\t\turl: url,\n\/\/\t\t\t\tbeforeSend: function() {\n\/\/\t\t\t\t\teditor_message('loading structure');\n\/\/\t\t\t\t},\n\/\/\t\t\t\tsuccess: function(data) {\t\n\/\/\t\t\t\t\t$('#editor-box').show(0, function() {\n\/\/\t\t\t\t\t\t$('#editor-box').html(jme);\n\/\/\t\t\t\t\t});\n\/\/\t\t\t\t\teditor_message('');\n\/\/\t\t\t\t\tdocument.JME.readMolecule(data);\n\/\/\t\t\t\t\teditor_dialog_button_click('Done', finish_jme_cmd);\n\/\/\t\t\t\t\teditor_dialog_button_state('Done', 'enable');\n\/\/\t\t\t\t},\n\/\/\t\t\t\terror: function(data) {\n\/\/\t\t\t\t\teditor_message('sorry, structure identifier not resolvable!', 3000);\n\/\/\t\t\t\t\t$('#editor-box').show(0, function() {\n\/\/\t\t\t\t\t\t$('#editor-box').html(jme);\n\/\/\t\t\t\t\t});\n\/\/\t\t\t\t\teditor_dialog_button_click('Done', finish_jme_cmd);\n\/\/\t\t\t\t\teditor_dialog_button_state('Done', 'enable');\n\/\/\t\t\t\t}\n\/\/\t\t\t});\n\/\/\t\t} else {\n\/\/\t\t\t$('#editor-box').fadeIn(500);\n\/\/\t\t\t$('#editor-box').show(0, function() {\n\/\/\t\t\t\t$('#editor-box').html(jme);\n\/\/\t\t\t});\n\/\/\t\t\teditor_message('');\n\/\/\t\t\teditor_dialog_button_click('Done', finish_jme_cmd);\n\/\/\t\t\teditor_dialog_button_state('Done', 'enable');\n\/\/\t\t}\n\t\treturn false;\n\t}\n\n\tfunction prepare_chemwriter(identifier) {\n\t\teditor_dialog_button_state('Done', 'disable');\n\t\t$('#editor-box').empty();\n\t\tvar licensePath = '\/license\/license\/cactus.nci.nih.gov.lic'\n\t\tif (identifier) {\n\t\t\t\/\/editor_message('loading structure');\n\t\t\tvar url =  '\/chemical\/structure\/' + encodeURI(identifier) + '\/file?format=sdf&operator=remove_hydrogens';\n\t\t\t$.ajax({\n\t\t\t\turl: url,\n\t\t\t\tbeforeSend: function() {\n\t\t\t\t\teditor_message('loading structure');\n\t\t\t\t},\n\t\t\t\tsuccess: function(data) {\t\n\t\t\t\t\t$('#editor-box').fadeIn(500);\n\t\t\t\t\teditor_object = chemwriter.loadEditor(editor_box_id, {'molfile': data, 'licensePath': licensePath});\n\t\t\t\t\teditor_message('');\n\t\t\t\t\teditor_dialog_button_click('Done', finish_chemwriter_cmd);\n\t\t\t\t\teditor_dialog_button_state('Done', 'enable');\n\t\t\t\t},\n\t\t\t\terror: function(data) {\n\t\t\t\t\t$('#editor-box').fadeIn(500);\n\t\t\t\t\teditor_object = chemwriter.loadEditor(editor_box_id, {'licensePath': licensePath});\n\t\t\t\t\teditor_message('sorry, structure identifier not resolvable!', 3000);\n\t\t\t\t\teditor_dialog_button_click('Done', finish_chemwriter_cmd);\n\t\t\t\t\teditor_dialog_button_state('Done', 'enable');\n\t\t\t\t}\n\t\t\t});\n\t\t\teditor_dialog_button_click('Done', finish_chemwriter_cmd);\n\t\t} else {\n\t\t\t$('#chemwriter-editor').fadeIn(500);\n\t\t\t$('#editor-box').fadeIn(500);\n\t\t\teditor_object = chemwriter.loadEditor(editor_box_id, {'licensePath': licensePath});\n\t\t\teditor_message('');\n\t\t\teditor_dialog_button_click('Done', finish_chemwriter_cmd);\n\t\t\teditor_dialog_button_state('Done', 'enable');\n\t\t}\n\t\treturn false;\n\t}\n\n\tfunction get_insert_element() {\n\t\tinsert_to_element_name = $('#editor-button-pane').attr('editor_for');\n\t\tinsert_to_element = $('#' + insert_to_element_name );\n\t\treturn insert_to_element;\n\t}\n\n\tvar finish_chemwriter_cmd = function(insert_to_element) {\n\t\teditor_dialog_button_state('Done', 'disable');\n\t\tvar molfile = editor_object.getMolfile();\n\t\tif (!molfile) {return;}\n\t\tmolfile = molfile.replace(\/\\n\/g, '\\\\n');\n\t\tmolfile = molfile + '$$$$\\\\n';\n\t\tvar url =  '\/chemical\/structure\/' + encodeURI(molfile) + '\/smiles?operator=add_hydrogens';\n\t\tvar to_element = get_insert_element()\n\t\t$.ajax({\n\t\t\ttype: 'POST',\n\t\t\turl: url,\n\t\t\tbeforeSend: function() {\n\t\t\t\teditor_message('converting to SMILES');\n\t\t\t},\n\t\t\tsuccess: function(data) {\t\n\t\t\t\tto_element.val(data);\n\t\t\t\t$('#editor-widget-dialog').dialog('close', function() {\n\t\t\t\t\t$('#editor-box').empty();\n\t\t\t\t});\n\t\t\t},\n\t\t\terror: function(data) {\n\t\t\t\t$('#editor-widget-dialog').dialog('close');\n\t\t\t}\n\t\t});\n\t}\n\n\tvar finish_jme_cmd = function(insert_to_element) {\n\t\teditor_dialog_button_state('Done', 'disable');\n\t\tvar smiles = document.JME.smiles();\n\t\tvar to_element = get_insert_element();\n\t\tif (smiles) {\n\t\t\tto_element.val(smiles);\n\t\t} else {\n\t\t\tto_element.val('');\n\t\t}\n\t\t$('#editor-widget-dialog').dialog('close');\n\t\t$('#editor-box').empty();\n\t\treturn false;\n\t}\n\n\tfunction editor_dialog_button_click(button, cmd) {\n\t\t$('#editor-widget-dialog ~ .ui-dialog-buttonpane .ui-dialog-buttonset')\n\t\t\t.children(\"button:contains(\"+button+\")\").button().unbind('click');\n\t\t$('#editor-widget-dialog ~ .ui-dialog-buttonpane .ui-dialog-buttonset')\n\t\t\t.children(\"button:contains(\"+button+\")\").button().bind('click', cmd); \n\t}\n\n\tfunction editor_dialog_button_state(button, state) {\n\t\tswitch (state) {\n\t\t\tcase 'enable': {\n\t\t\t\t$('#editor-widget-dialog ~ .ui-dialog-buttonpane .ui-dialog-buttonset')\n\t\t\t\t\t.children(\"button:contains(\"+button+\")\").button('enable'); \n\t\t\t\tbreak;\n\t\t\t}\n\t\t\tcase 'disable': {\n\t\t\t\t$('#editor-widget-dialog ~ .ui-dialog-buttonpane .ui-dialog-buttonset')\n\t\t\t\t\t.children(\"button:contains(\"+button+\")\").button('disable');\n\t\t\t\tbreak;\n\t\t\t}\n\t\t}\n\t}\n\n\tfunction show_editor(from_element) {\n\t\t$('#editor-box').hide()\n\t\teditor_dialog_button_state('Done', 'disable');\n\t\teditor_dialog.dialog(\"open\");\n\t\teditor_message('initializing');\n\t\tvar identifier = from_element.val()\n\t\tvar editor_choice = $(\"input[name='editor-choice']:checked\").val();\n\t\tswitch (editor_choice) {\n\t\t\tcase 'chemwriter': {prepare_chemwriter(identifier); break;}\n\t\t\tcase 'jme': {prepare_jme(identifier); break;}\n\t\t\tdefault: {prepare_chemwriter(identifier); break;}\n\t\t}\n\t}\n\n\tvar editor_box_id = $('#editor-box').get(0).id;\n\n\tvar editor_dialog = $('#editor-widget-dialog').dialog({\n\t\tautoOpen: false,\n\t\tzindex: 500,\n\t\theight: 550,\n\t\twidth: 640,\n\t\tmodal: true,\n\t\tdisabled: false,\n\t\tshow: 'fade',\n\t\thide: 'fade',\n\t\tspeed: 500,\n\t\tresizable: false,\n\t\tbuttons: [\n\t\t\t{\n\t\t\t\ttext: \"Done\"\n\t\t\t}\n\t\t]\n\t});\n\n\t$('#editor-button-pane').html('\\\n\t\t<div><button id=\"editor-button\">Structure<\/button><button id=\"editor-select\">Select<\/button><\/div>\\\n\t\t<ul style=\"padding:5px\">\\\n\t\t<li style=\"padding:5px\"><input type=\"radio\" id=\"chemwriter-radio\" name=\"editor-choice\" value=\"chemwriter\" checked=\"checked\"\/><label for=\"chemwriter-radio\">ChemWriter<\/label><\/li>\\\n\t\t<li style=\"padding:5px\"><input type=\"radio\" id=\"jme-radio\" name=\"editor-choice\" value=\"jme\"\/><label for=\"jme-radio\">JME<\/label><\/li>\\\n\t\t<\/ul>\\\n\t');\n\n\t$(function() {\n\t\t$( \"#editor-button\" )\n\t\t\t.button()\n\t\t\t.click(function() {\n\t\t\t\tfrom_element_name = $('#editor-button-pane').attr('editor_for');\n\t\t\t\tfrom_element = $('#' + from_element_name);\n\t\t\t\tshow_editor(from_element);\n\t\t\t\treturn false;\n\t\t});\n\t\t$( \"#editor-select\" )\n\t\t\t.button({\n\t\t\t\ttext: false,\n\t\t\t\ticons: {\n\t\t\t\t\tprimary: \"ui-icon-triangle-1-s\"\n\t\t\t\t}\n\t\t\t})\n\t\t\t.click( function() {\n\t\t\t\tvar menu = $(this).parent().next().show().position({\n\t\t\t\t\tmy: \"right top\",\n\t\t\t\t\tat: \"right bottom\",\n\t\t\t\t\tof: this\n\t\t\t\t});\n\t\t\t\t$(document).one(\"click\", function() {\n\t\t\t\t\tmenu.fadeOut('100');\n\t\t\t\t});\n\t\t\t\treturn false;\n\t\t\t})\n\t\t\t.parent()\n\t\t\t\t.buttonset()\n\t\t\t.next()\n\t\t\t\t.hide()\n\t\t\t\t.menu();\n\t});\n\n<\/script>\n\n<style>\n\t.ui-menu { position: absolute; width: 160px; }\n<\/style>\n\n\n\n\n\n\t<\/div>\n\n<\/div>\n\n<div class=\"Content\">\n\n\t<div class=\"CenterArea\" id=\"ContentCenterArea\">\n\t\n\t<div id=\"service_description\">\n\t<div class=\"Box\" id=\"getting_started\">\n\t<div class=\"Section\">\n\t\t<div id=\"getting_started_response_box\">\n\t\t\t<div id=\"getting_started_response_box_text\">\n\t\t\t\t<h2>Getting started ...<\/h2>\n\t\t\t\t<p class=\"runningText\">\n\t\t\t\tThis service works as a resolver for different chemical structure identifiers and allows one to convert a \n\t\t\t\tgiven structure identifier into another representation or structure identifier. It can help you identify\n\t\t\t\tand find the chemical structure if you have an identifier such as an InChIKey. You can either use \n\t\t\t\tthe resolver web form above or use the following simple URL API scheme:\n\t\t\t\t<\/p>\n\t\t\n\t\t\t\t<p id=\"bigCenterURL\">https:\/\/cactus.nci.nih.gov\/chemical\/structure\/<span class=\"highlighted_span highlighted_span_1\">\"structure identifier\"<\/span>\/<span class=\"highlighted_span highlighted_span_2\">\"representation\"<\/span><\/p>\n\t\t\t\t<div id=\"quickExample\"><p><em>Example: <\/em>Chemical name to Standard InChIKey:<\/p> <p><a href=\"\/chemical\/structure\/aspirin\/stdinchikey\">https:\/\/cactus.nci.nih.gov\/chemical\/structure\/aspirin\/stdinchikey<\/a><\/p><\/div>\n\t\t\t\t<p class=\"runningText\">\n\t\t\t\tThe service returns the requested new structure representation with a corresponding MIME-Type specification\n\t\t\t\t(in most cases <span class=\"term\">MIME-Type: \"text\/plain\"<\/span>). If a requested URL is not resolvable for the \n\t\t\t\tservice an <span class=\"term\">HTML 404 status<\/span> message is returned. In the (unlikely) case of an error, \n\t\t\t\tan <span class=\"term\">HTML 500 status<\/span> message is generated. \n                                \n\n\t\t\t\t<em>Note:<\/em> Triple bonds in SMILES strings represented by '#' have to be URL-escaped as '%23' (e.g. the SMILES string of <span class=\"term\">ethyne<\/span> has to be specified as 'C%23C' instead of 'C#C' if encoded as part of a URL). Similarly, question marks, which can occur in InChI, need to be URL-escaped as %3F.\n                                \n                                \n\t\t\t\t<\/p>\n\n\t\t\t<\/div>\n\t\t\t<div id=\"getting_started_response_box_content\" style=\"display:none\">\n\t\t\t\t<div id=\"getting_started_url_box\"><em>URL<\/em>: <span id=\"getting_started_url\"><\/span><\/div>\n\t\t\t\t<div id=\"getting_started_response_box_description\"><\/div>\n\t\t\t\t<div id=\"getting_started_response_box_data\" height=\"320\" width=\"860\"><\/div>\n\t\t\t<\/div>\n\t\t<\/div>\n\t<\/div>\n\t<\/div>\n\n\n\t<\/div>\n\n<\/div>\n\n<div class=\"Footer\">\n\t\n\t<div class=\"CenterArea\">\n\t\n\n\t<div id=\"navigation_container\" class=\"Navigation\"><p><a id=\"getting_started_link\" href=\"\/chemical\/structure\">Getting started ...<\/a> | <a id=\"doc_link\" href=\"\/chemical\/structure_documentation\">Documentation<\/a> | <a href=\"\/blog\">Blog<\/a> | <a href=\"\/ncicadd\/contact.html\">Contact<\/a> | <a href=\"\/ncicadd\/disclaimer.html\">Disclaimer<\/a> | <a href=\"\/ncicadd\/privacy.html\">Privacy Statement<\/a><\/p><\/div>\n\t<!--<p>Markus Sitzmann (markus.sitzmann+++gmail.com)<\/p>-->\n\t<p>NCI\/CADD Group 2009-2025<\/p>\n\t<p>2nd April 2025 17:10<\/p>\n\n\n\t<\/div>\n\n<\/div>\n\n<\/body>\n<\/html>",
+    "Formula":"",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25ml  Qta 75  ml        Owner     Tecnici didattici bio       samanta.paltrinieri@unibo.it 0516354103                                       Physical Form Liquid,",
+    "Supplier":"Other:  FaR diagnostic",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphomolybdic acid",
+    "CAS":"12026-57-2",
+    "SMILES":"[OH-].[O--].[P-3].[Mo]",
+    "Formula":"H3PMo12O40",
+    "Category":[
+      "Heterocyclic",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25g  Qta 5  g        Owner     Locatelli       alessandra.locatelli@unibo.it                                        Physical Form Solid,",
+    "Supplier":"Other:  BDH",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphomolybdic acid hydrate",
+    "CAS":"51429-74-4",
+    "SMILES":null,
+    "Formula":"H3Mo12O40P.nH2O",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25g  Qta 25  g        Owner     Roberti       marinella.roberti@unibo.it 0512099738               Mol. Weight 1825,24,              Grade ACS reagent,              Physical Form Liquid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphomolybdic acid hydrate",
+    "CAS":"51429-74-4",
+    "SMILES":null,
+    "Formula":"H3Mo12O40P.nH2O",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 50g  Qta 50  g        Owner     Budriesi       roberta.budriesi@unibo.it                    Assay >98.5%,          Grade RPE-ACS,              Physical Form Solid,",
+    "Supplier":"Carlo Erba",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphomolybdic acid hydrate",
+    "CAS":"51429-74-4",
+    "SMILES":null,
+    "Formula":"H3Mo12O40P.nH2O",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25g  Qta 20  g        Owner     Locatelli       alessandra.locatelli@unibo.it                Mol. Weight 1825,24,              Grade ACS reagent,              Physical Form Liquid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphonitrilic chloride trimer,- 2,2,4,4,6,6-hexachloro-1,3,5-triaza-2$l^{5},4$l^{5},6$l^{5}-triphosphacyclohexa-1,3,5-triene",
+    "CAS":"940-71-6",
+    "SMILES":"Cl[P]1(=N[P](=N[P](=N1)(Cl)Cl)(Cl)Cl)Cl",
+    "Formula":"Cl6N3P3",
+    "Category":[
+      "Heterocyclic",
+      "Halogenated",
+      "Containing Cl",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 50g  Qta 50  g        Owner     Minarini        anna.minarini@unibo.it                Mol. Weight 347.66,      Assay 80%,          Grade tech.,              Physical Form Solid,",
+    "Supplier":"Jansen",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"phosphoric acid trioxotungsten hydrate Phosphotungstic acid",
+    "CAS":"12501-23-4",
+    "SMILES":null,
+    "Formula":"H3[P(W3O10)4]",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 100mg  Qta 100  mg        Owner     Monti       monia.bentivogli@unibo.it                                        Physical Form Solid,",
+    "Supplier":"-- Other --",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphorilase-\u03b1",
+    "CAS":"04-10-32",
+    "SMILES":null,
+    "Formula":"C2H8NO4P",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 100mg  Qta 100  mg        Owner     Monti       monia.bentivogli@unibo.it                                        Physical Form Solid,",
+    "Supplier":"-- Other --",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phosphorus pentoxide",
+    "CAS":"1314-56-3",
+    "SMILES":"O=[P]12O[P]3(=O)O[P](=O)(O1)O[P](=O)(O2)O3",
+    "Formula":"P2O5",
+    "Category":[
+      "Heterocyclic",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"LO          IS                    Pkg 500g  Qta 400  g        Owner     Bolognesi       elisa.uliassi3@unibo.it                    Assay 99%,          Grade reagentPlus,              Physical Form Solid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus pentoxide",
+    "CAS":"1314-56-3",
+    "SMILES":"O=[P]12O[P]3(=O)O[P](=O)(O1)O[P](=O)(O2)O3",
+    "Formula":"P2O5",
+    "Category":[
+      "Heterocyclic",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 100g  Qta 600  g        Owner     Minarini        anna.minarini@unibo.it                Mol. Weight 141.94,              Grade desiccant, with moisture indicator ,              Physical Form Solid,",
+    "Supplier":"Fluka",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus pentoxide",
+    "CAS":"1314-56-3",
+    "SMILES":"O=[P]12O[P]3(=O)O[P](=O)(O1)O[P](=O)(O2)O3",
+    "Formula":"P2O5",
+    "Category":[
+      "Heterocyclic",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 500g  Qta 500  g        Owner     Roberti       marinella.roberti@unibo.it 0512099738               Mol. Weight 141,94,      Assay 98%,          Grade puiriss. p.a.,              Physical Form Liquid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus pentoxide",
+    "CAS":"1314-56-3",
+    "SMILES":"O=[P]12O[P]3(=O)O[P](=O)(O1)O[P](=O)(O2)O3",
+    "Formula":"P2O5",
+    "Category":[
+      "Heterocyclic",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25g  Qta 25  g        Owner     Minarini        anna.minarini@unibo.it                Mol. Weight 141.94,      Assay 99.998%,                      Physical Form Solid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus(V) oxychloride",
+    "CAS":"10025-87-3",
+    "SMILES":"Cl[P](Cl)(Cl)=O",
+    "Formula":"Cl3OP",
+    "Category":[
+      "Heterocyclic",
+      "Halogenated",
+      "Containing Cl",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 1000g  Qta 0  g        Owner     Locatelli       alessandra.locatelli@unibo.it                        Concentration 99%,      Grade reagentplus,              Physical Form Liquid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus(V) oxychloride",
+    "CAS":"10025-87-3",
+    "SMILES":"Cl[P](Cl)(Cl)=O",
+    "Formula":"Cl3OP",
+    "Category":[
+      "Heterocyclic",
+      "Halogenated",
+      "Containing Cl",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 1l  Qta 1  l        Owner     Minarini        anna.minarini@unibo.it                Mol. Weight 153.33,              Grade RPE,              Physical Form Liquid,",
+    "Supplier":"Carlo Erba",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus(V) oxychloride",
+    "CAS":"10025-87-3",
+    "SMILES":"Cl[P](Cl)(Cl)=O",
+    "Formula":"Cl3OP",
+    "Category":[
+      "Heterocyclic",
+      "Halogenated",
+      "Containing Cl",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 250g  Qta 250  g        Owner     Roberti       marinella.roberti@unibo.it 0512099738               Mol. Weight 153,33,                          Physical Form Liquid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphorus(V) oxychloride",
+    "CAS":"10025-87-3",
+    "SMILES":"Cl[P](Cl)(Cl)=O",
+    "Formula":"Cl3OP",
+    "Category":[
+      "Heterocyclic",
+      "Halogenated",
+      "Containing Cl",
+      "Inorganic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"LO          IS                    Pkg 1l  Qta 0.2  l        Owner     Bolognesi       elisa.uliassi3@unibo.it                Mol. Weight 153.33,              Grade RPE,              Physical Form Liquid,",
+    "Supplier":"Carlo Erba",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phosphotungstic acid hydrate",
+    "CAS":"12067-99-1",
+    "SMILES":null,
+    "Formula":"P205*24WO+H2O",
+    "Category":[
+
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25g  Qta 25  g        Owner     Roberti       marinella.roberti@unibo.it 0512099738               Mol. Weight 5706.35,                          Physical Form Solid,",
+    "Supplier":"Alfa Aesar",
+    "StructureImage":null
+  },
+  {
+    "NAME":"Phthaldialdehyde",
+    "CAS":"643-79-8",
+    "SMILES":"O=Cc1ccccc1C=O",
+    "Formula":"C8H6O2",
+    "Category":[
+      "Aldehyde",
+      "Aromatic",
+      "Heterocyclic",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 10g  Qta 10  g        Owner     Roberti       marinella.roberti@unibo.it 0512099738               Mol. Weight 134.14,      Assay 98%,                      Physical Form Solid,",
+    "Supplier":"Alfa Aesar",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phthaldialdehyde",
+    "CAS":"643-79-8",
+    "SMILES":"O=Cc1ccccc1C=O",
+    "Formula":"C8H6O2",
+    "Category":[
+      "Aldehyde",
+      "Aromatic",
+      "Heterocyclic",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 5g  Qta 5  g        Owner     Minarini        anna.minarini@unibo.it                Mol. Weight 134.13,      Assay 97%,                      Physical Form Solid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phthaldialdehyde",
+    "CAS":"643-79-8",
+    "SMILES":"O=Cc1ccccc1C=O",
+    "Formula":"C8H6O2",
+    "Category":[
+      "Aldehyde",
+      "Aromatic",
+      "Heterocyclic",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 10g  Qta 10  g        Owner     Locatelli       alessandra.locatelli@unibo.it                    Assay >=97%,          Grade purum (HPLC),              Physical Form Solid,",
+    "Supplier":"Fluka",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phthalic anhydride",
+    "CAS":"85-44-9",
+    "SMILES":"O=C1OC(=O)c2ccccc12",
+    "Formula":"C8H4O3",
+    "Category":[
+      "Aromatic",
+      "Heterocyclic",
+      "Linear",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"LO          IS                    Pkg 25mg  Qta 25  mg        Owner     Bolognesi       elisa.uliassi3@unibo.it         Delivery 2024-11-14                                  Physical Form Solid,               Notes aliquote",
+    "Supplier":"-- Other --",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phthalic anhydride",
+    "CAS":"85-44-9",
+    "SMILES":"O=C1OC(=O)c2ccccc12",
+    "Formula":"C8H4O3",
+    "Category":[
+      "Aromatic",
+      "Heterocyclic",
+      "Linear",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 25g  Qta 10  g        Owner     Bisi       alessandra.bisi@unibo.it                    Assay 99%,                      Physical Form Solid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phthalimide potassium salt - (potassium isoindol-2-ide-1,3-dione)",
+    "CAS":"1074-82-4",
+    "SMILES":"[K+].O=C1[N-]C(=O)c2ccccc12",
+    "Formula":"C8H4KNO2",
+    "Category":[
+      "Aromatic",
+      "Heterocyclic",
+      "Linear",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 100g  Qta 100  g        Owner     Roberti       marinella.roberti@unibo.it 0512099738               Mol. Weight 185.22,      Assay 98%,                      Physical Form Solid,",
+    "Supplier":"Fluka",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  },
+  {
+    "NAME":"Phthalimide potassium salt - (potassium isoindol-2-ide-1,3-dione)",
+    "CAS":"1074-82-4",
+    "SMILES":"[K+].O=C1[N-]C(=O)c2ccccc12",
+    "Formula":"C8H4KNO2",
+    "Category":[
+      "Aromatic",
+      "Heterocyclic",
+      "Linear",
+      "Organic"
+    ],
+    "Date Added":"2025-04-02 23:11:17",
+    "Detail":"Pkg 100g  Qta 5  g        Owner     Bisi       alessandra.bisi@unibo.it                Mol. Weight 185.22,      Assay 98%,                      Physical Form Solid,",
+    "Supplier":"Sigma Aldrich",
+    "StructureImage":{
+      "PdmDepth":6,
+      "PdmDevicePixelRatio":11,
+      "PdmDevicePixelRatioScaled":12,
+      "PdmDpiX":7,
+      "PdmDpiY":8,
+      "PdmHeight":2,
+      "PdmHeightMM":4,
+      "PdmNumColors":5,
+      "PdmPhysicalDpiX":9,
+      "PdmPhysicalDpiY":10,
+      "PdmWidth":1,
+      "PdmWidthMM":3
+    }
+  }
+]
