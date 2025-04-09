@@ -339,31 +339,70 @@ class CatalogWidget(QWidget):
                                                   options=options)
         if fileName:
             try:
+                # Read CSV and standardize column names (case-insensitive)
                 df = pd.read_csv(fileName)
-                df = df.drop(columns=[c for c in REMOVE_COLUMNS if c in df.columns], errors='ignore')
-                for col in ["NAME", "CAS", "SMILES"]:
-                    if col not in df.columns:
-                        df[col] = ""
-                df["SMILES"] = df.apply(
-                    lambda r: r["SMILES"] if r["SMILES"] != "" else get_smiles(r.get("NAME"), r.get("CAS")), axis=1)
+
+                # Create a mapping of lowercase column names to original names
+                col_mapping = {col.lower(): col for col in df.columns}
+
+                # Standardize column names (we'll use lowercase for comparison)
+                required_cols = ['name', 'cas', 'smiles']
+                remove_cols = [col.lower() for col in REMOVE_COLUMNS]
+
+                # Drop unwanted columns (case-insensitive)
+                cols_to_drop = [col_mapping[col] for col in remove_cols if col in col_mapping]
+                df = df.drop(columns=cols_to_drop, errors='ignore')
+
+                # Ensure required columns exist (case-insensitive)
+                for col in required_cols:
+                    if col not in col_mapping:
+                        df[col.upper()] = ""
+
+                # Handle SMILES column (case-insensitive)
+                smiles_col = next((col for col in df.columns if col.lower() == 'smiles'), 'SMILES')
+                df[smiles_col] = df.apply(
+                    lambda r: r[smiles_col] if r[smiles_col] != "" else get_smiles(
+                        r.get(col_mapping.get('name', 'NAME')),
+                        r.get(col_mapping.get('cas', 'CAS'))
+                    ), axis=1
+                )
+
+                # Handle Formula column (case-insensitive)
+                formula_col = next((col for col in df.columns if col.lower() == 'formula'), None)
+                if formula_col:
+                    # Rename to standard 'Formula' if it exists with different case
+                    if formula_col != 'Formula':
+                        df['Formula'] = df[formula_col]
+                        df = df.drop(columns=[formula_col])
+                else:
+                    df['Formula'] = ""
 
                 def update_formula(row):
-                    if pd.notnull(row.get("Formula")) and str(row.get("Formula")).strip() != "":
-                        return row["Formula"]
+                    if pd.notnull(row.get('Formula')) and str(row.get('Formula')).strip() != "":
+                        return row['Formula']
                     else:
-                        s = row.get("SMILES")
+                        s = row.get(smiles_col)
                         if s and isinstance(s, str):
                             return calculate_formula(s) or ""
                         else:
                             return ""
 
-                df["Formula"] = df.apply(update_formula, axis=1)
-                df["Category"] = df["SMILES"].apply(
+                # Apply formula update only to rows with empty Formula
+                mask = (df['Formula'].isna()) | (df['Formula'].astype(str).str.strip() == "")
+                df.loc[mask, 'Formula'] = df[mask].apply(update_formula, axis=1)
+
+                # Handle category (case-insensitive)
+                df['Category'] = df[smiles_col].apply(
                     lambda s: categorize_molecule(s) if s and isinstance(s, str) else [])
-                df["StructureImage"] = df["SMILES"].apply(
+
+                # Handle structure image
+                df['StructureImage'] = df[smiles_col].apply(
                     lambda s: generate_structure_image(s) if s and isinstance(s, str) else None)
-                if "Date Added" not in df.columns:
-                    df["Date Added"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                # Handle date added (case-insensitive)
+                date_col = next((col for col in df.columns if col.lower() == 'date added'), None)
+                if not date_col:
+                    df['Date Added'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 self.data = pd.concat([self.data, df], ignore_index=True)
                 self.populate_views()
