@@ -23,9 +23,13 @@ class CustomListWidget(QListWidget):
         item = self.itemAt(event.pos())
         if item:
             menu = QMenu(self)
+            renameAction = menu.addAction("Rename Catalog")
             deleteAction = menu.addAction("Delete Catalog")
             action = menu.exec_(self.mapToGlobal(event.pos()))
-            if action == deleteAction:
+
+            if action == renameAction:
+                self.rename_catalog(item)
+            elif action == deleteAction:
                 reply = QMessageBox.question(self, "Delete Catalog",
                                              f"Are you sure you want to permanently delete catalog '{item.text()}'?",
                                              QMessageBox.Yes | QMessageBox.No)
@@ -47,6 +51,45 @@ class CustomListWidget(QListWidget):
                             QMessageBox.critical(self, "Error", f"Error deleting catalog: {e}")
         else:
             super().contextMenuEvent(event)
+
+    def rename_catalog(self, item):
+        old_name = item.text()
+        new_name, ok = QInputDialog.getText(
+            self, "Rename Catalog",
+            "Enter new catalog name:",
+            QLineEdit.Normal,
+            old_name
+        )
+
+        if ok and new_name and new_name != old_name:
+            if new_name in self.main_window.catalog_files:
+                QMessageBox.warning(self, "Error", "A catalog with this name already exists.")
+                return
+
+            try:
+                old_path = self.main_window.catalog_files[old_name]
+                new_path = os.path.join(os.path.dirname(old_path), f"{new_name}.json")
+
+                # Rename the file
+                os.rename(old_path, new_path)
+
+                # Update references in main window
+                self.main_window.catalog_files[new_name] = new_path
+                del self.main_window.catalog_files[old_name]
+
+                if old_name in self.main_window.open_catalog_tabs:
+                    widget = self.main_window.open_catalog_tabs[old_name]
+                    self.main_window.open_catalog_tabs[new_name] = widget
+                    del self.main_window.open_catalog_tabs[old_name]
+                    widget.catalog_name = new_name
+                    idx = self.main_window.tabWidget.indexOf(widget)
+                    self.main_window.tabWidget.setTabText(idx, new_name)
+
+                # Update the item text
+                item.setText(new_name)
+
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Error renaming catalog: {e}")
 
     def mouseDoubleClickEvent(self, event):
         super().mouseDoubleClickEvent(event)

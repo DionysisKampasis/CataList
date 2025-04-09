@@ -33,8 +33,6 @@ class CatalogWidget(QWidget):
                 if col not in self.data.columns:
                     self.data[col] = ""
 
-
-
         # Process SMILES data
         if "SMILES" in self.data.columns:
             self.data["SMILES"] = self.data.apply(
@@ -364,7 +362,7 @@ class CatalogWidget(QWidget):
                     lambda s: generate_structure_image(s) if s and isinstance(s, str) else None)
                 if "Date Added" not in df.columns:
                     df["Date Added"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
+
                 self.data = pd.concat([self.data, df], ignore_index=True)
                 self.populate_views()
                 self.save_catalog(silent=True)
@@ -402,7 +400,8 @@ class CatalogWidget(QWidget):
             if new_rows:
                 new_df = pd.DataFrame(new_rows)
                 # Ensure all expected columns exist
-                for col in ["NAME", "CAS", "SMILES", "Formula", "Category", "StructureImage", "Date Added", "Supplier", "Detail"]:
+                for col in ["NAME", "CAS", "SMILES", "Formula", "Category", "StructureImage", "Date Added", "Supplier",
+                            "Detail"]:
                     if col not in new_df.columns:
                         new_df[col] = ""
 
@@ -554,7 +553,7 @@ class CatalogModel:
 
     def create_new_catalog(self, name):
         path = os.path.join(CATALOGS_FOLDER, f"{name}.json")
-        df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added","Supplier", "Detail"])
+        df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
         df.to_json(path, orient="records", indent=2)
         self.catalog_files[name] = path
         return path, df
@@ -565,11 +564,14 @@ class CatalogModel:
             try:
                 df = pd.read_json(path, orient="records")
                 if df.empty:
-                    df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
+                    df = pd.DataFrame(
+                        columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
             except Exception:
-                df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
+                df = pd.DataFrame(
+                    columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
         else:
-            df = pd.DataFrame(columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
+            df = pd.DataFrame(
+                columns=["NAME", "CAS", "SMILES", "Formula", "Category", "Date Added", "Supplier", "Detail"])
         return path, df
 
 
