@@ -7,6 +7,7 @@ import requests
 
 from benchmark import timer_function  # noqa
 from chemistry_functions import *
+from image_conversions import generate_structure_image
 
 # Compile the regex patterns once at module level
 CAS_PATTERN_1 = re.compile(r"^\d{2,7}-\d{2}-\d$")
