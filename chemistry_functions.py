@@ -1,8 +1,5 @@
-from io import BytesIO
-
-from PyQt5.QtGui import QPixmap, QImage
 from rdkit import Chem
-from rdkit.Chem import Draw, rdMolDescriptors
+from rdkit.Chem import rdMolDescriptors
 
 from app_constants import *  # noqa
 from benchmark import timer_function
@@ -54,22 +51,6 @@ def get_name(smiles):
     except Exception as e:
         print(f"Error retrieving name for SMILES {smiles}: {e}")
     return None
-
-
-@timer_function
-def generate_structure_image(smiles):
-    if not smiles:
-        return None
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        print(f"RDKit could not parse SMILES: {smiles}")
-        return None
-    img = Draw.MolToImage(mol, size=(IMAGE_SIZE, IMAGE_SIZE))
-    data = BytesIO()
-    img.save(data, format="JPEG")
-    data.seek(0)
-    qt_img = QImage.fromData(data.read(), "JPEG")
-    return QPixmap.fromImage(qt_img)
 
 
 @timer_function

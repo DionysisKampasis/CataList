@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import (
 )
 
 from app_constants import *  # noqa
+from image_conversions import *
 from smiles_fetch import *
 
 
@@ -29,6 +30,10 @@ class CatalogWidget(QWidget):
             self.data = pd.DataFrame(columns=default_cols)
         else:
             self.data = data.copy()
+            if "StructureImage" in self.data.columns:
+                self.data["StructureImage"] = self.data["StructureImage"].apply(
+                    lambda b64: base64_to_pixmap(b64) if isinstance(b64, str) else None
+                )
             for col in default_cols:
                 if col not in self.data.columns:
                     self.data[col] = ""
@@ -53,9 +58,6 @@ class CatalogWidget(QWidget):
             self.data["Formula"] = self.data.apply(update_formula, axis=1)
             self.data["Category"] = self.data["SMILES"].apply(
                 lambda s: categorize_molecule(s) if s and isinstance(s, str) else []
-            )
-            self.data["StructureImage"] = self.data["SMILES"].apply(
-                lambda s: generate_structure_image(s) if s and isinstance(s, str) else None
             )
 
         self.last_sorted_column = None
@@ -457,7 +459,12 @@ class CatalogWidget(QWidget):
 
     def save_catalog(self, silent=True):
         try:
-            self.data.to_json(self.file_path, orient="records", indent=2)
+            data_to_save = self.data.copy()
+            if "StructureImage" in data_to_save.columns:
+                data_to_save["StructureImage"] = data_to_save["StructureImage"].apply(
+                    lambda pix: pixmap_to_base64(pix) if pix and isinstance(pix, QPixmap) else None
+                )
+            data_to_save.to_json(self.file_path, orient="records", indent=2)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Could not save catalog: {e}")
 
