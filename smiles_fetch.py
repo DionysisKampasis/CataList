@@ -1,5 +1,6 @@
 import re
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import *
 
 import pubchempy as pcp
@@ -32,17 +33,17 @@ def initialize_compound_data():
     }
 
 
-@timer_function
+# @timer_function
 def is_valid_cas(input_data):
     return bool(CAS_PATTERN_1.match(input_data)) or bool(CAS_PATTERN_2.match(input_data))
 
 
-@timer_function
+# @timer_function
 def is_valid_smiles(input_data):
     return Chem.MolFromSmiles(input_data) is not None
 
 
-@timer_function
+# @timer_function
 def fetch_compound_by_cas(cas, compound_data):
     try:
         compounds = pcp.get_compounds(cas, 'name')
@@ -56,7 +57,7 @@ def fetch_compound_by_cas(cas, compound_data):
     return compound_data
 
 
-@timer_function
+# @timer_function
 def fetch_compound_by_smiles(smiles, compound_data):
     """Fetch compound information using SMILES string."""
     try:
@@ -72,7 +73,7 @@ def fetch_compound_by_smiles(smiles, compound_data):
     return compound_data
 
 
-@timer_function
+# @timer_function
 def fetch_compound_by_name(name, compound_data):
     """Fetch compound information using chemical name."""
     try:
@@ -89,7 +90,7 @@ def fetch_compound_by_name(name, compound_data):
     return compound_data
 
 
-@timer_function
+# @timer_function
 def supplement_compound_data(compound_data):
     """Supplement missing compound data from alternative sources."""
     if not compound_data["SMILES"] and (compound_data["CAS"] or compound_data["NAME"]):
@@ -109,7 +110,7 @@ def supplement_compound_data(compound_data):
     return compound_data
 
 
-@timer_function
+# @timer_function
 def fetch_compound_info(input_data):
     """Main function to fetch compound information from various identifiers."""
     if not input_data:
@@ -131,7 +132,7 @@ def fetch_compound_info(input_data):
     return compound_data
 
 
-@timer_function
+# @timer_function
 def fetch_compound_info_by_cas(cas):
     try:
         compounds = pcp.get_compounds(cas, 'name')
@@ -172,7 +173,7 @@ def fetch_compound_info_by_cas(cas):
         return None
 
 
-@timer_function
+# @timer_function
 def cas_to_smiles_cactus(cas):
     url = f"https://cactus.nci.nih.gov/chemical/structure/{cas}/smiles"
     try:
@@ -189,7 +190,7 @@ def cas_to_smiles_cactus(cas):
         return None
 
 
-@timer_function
+# @timer_function
 def cas_to_smiles_chemspider(cas):
     if not CHEMSPIDER_API_KEY:
         print("ChemSpider API key not provided. Skipping ChemSpider.")
@@ -221,7 +222,7 @@ def cas_to_smiles_chemspider(cas):
         return None
 
 
-@timer_function
+# @timer_function
 def cas_to_smiles_pubchem(cas):
     try:
         compounds = pcp.get_compounds(identifier=cas, search_type='name')[0]
@@ -235,7 +236,7 @@ def cas_to_smiles_pubchem(cas):
         return None
 
 
-@timer_function
+# @timer_function
 def fetch_smiles_pubchem(identifier, search_type):
     try:
         compounds = pcp.get_compounds(identifier=identifier, search_type=search_type)[0]
@@ -250,27 +251,57 @@ def fetch_smiles_pubchem(identifier, search_type):
         return None
 
 
-@timer_function
+# @timer_function
 def get_smiles(name, cas):
     if isinstance(name, str) and name.startswith('CID'):
         return fetch_smiles_pubchem(name, 'inchikey')
-    else:
-        smiles = get_smiles_from_cache(cas)
-        if smiles is None:
-            smiles = cas_to_smiles_pubchem(cas)
-            if smiles is None:
-                smiles = cas_to_smiles_chemspider(cas)
-                if smiles is None:
-                    smiles = cas_to_smiles_cactus(cas)
-        set_smiles_in_cache(cas, smiles)
+
+    # Check cache first (fast path)
+    smiles = get_smiles_from_cache(cas)
+    if smiles is not None:
         return smiles
 
+    # Prepare lookup functions with their arguments
+    lookup_functions = [
+        (cas_to_smiles_pubchem, (cas,)),
+        (cas_to_smiles_chemspider, (cas,)),
+        (cas_to_smiles_cactus, (cas,))
+    ]
 
-@timer_function
+    # Execute all lookups in parallel
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        # Submit all tasks
+        future_to_func = {
+            executor.submit(func, *args): func_name
+            for func_name, (func, args) in enumerate(lookup_functions)
+        }
+
+        # Process results as they come in
+        for future in as_completed(future_to_func):
+            try:
+                result = future.result()
+                if result is not None:
+                    # Cancel remaining futures
+                    for f in future_to_func:
+                        if not f.done():
+                            f.cancel()
+                    # Cache and return the result
+                    set_smiles_in_cache(cas, result)
+                    return result
+            except Exception as e:
+                # Log errors but continue waiting for other results
+                print(f"Error in SMILES lookup: {e}")
+                continue
+
+    # If we get here, all lookups failed
+    return None
+
+
+# @timer_function
 def get_smiles_from_cache(identifier):
     return SMILES_CACHE.get(identifier)
 
 
-@timer_function
+# @timer_function
 def set_smiles_in_cache(identifier, smiles):
     SMILES_CACHE[identifier] = smiles

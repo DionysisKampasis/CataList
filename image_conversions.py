@@ -7,7 +7,6 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 
 from app_constants import *  # noqa
-from benchmark import timer_function
 
 
 def pixmap_to_base64(pixmap):
@@ -30,7 +29,7 @@ def base64_to_pixmap(b64_string):
         return None
 
 
-@timer_function
+# @timer_function
 def generate_structure_image(smiles):
     if not smiles:
         return None

@@ -1,14 +1,15 @@
 import concurrent.futures
 import os
 
+import numpy as np
 import pandas as pd
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QMenu,
-    QLabel, QTableWidgetItem, QHeaderView, QFileDialog, QMessageBox,
-    QInputDialog, QListWidget, QListWidgetItem, QDialog, QDialogButtonBox,
+    QLabel, QTableWidgetItem, QHeaderView, QInputDialog, QListWidget, QListWidgetItem, QDialog, QDialogButtonBox,
     QTextEdit, QComboBox, QCheckBox, QPushButton, QStackedWidget, QTableWidget
 )
 
@@ -41,7 +42,7 @@ class CatalogWidget(QWidget):
         # Process SMILES data
         if "SMILES" in self.data.columns:
             self.data["SMILES"] = self.data.apply(
-                lambda r: r["SMILES"] if r["SMILES"] != "" else get_smiles(r.get("NAME"), r.get("CAS")),
+                lambda r: r["SMILES"] if r["SMILES"] != "" else get_smiles(r.get("SMILES"), r.get("CAS")),
                 axis=1
             )
 
@@ -335,8 +336,9 @@ class CatalogWidget(QWidget):
 
     def import_csv(self):
         options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(self, "Import CSV", "", "CSV Files (*.csv);;All Files (*)",
-                                                  options=options)
+        fileName, _ = QFileDialog.getOpenFileName(
+            self, "Import CSV", "", "CSV Files (*.csv);;All Files (*)", options=options)
+
         if fileName:
             try:
                 # Read CSV and standardize column names (case-insensitive)
@@ -358,14 +360,37 @@ class CatalogWidget(QWidget):
                     if col not in col_mapping:
                         df[col.upper()] = ""
 
-                # Handle SMILES column (case-insensitive)
+                # Get the actual column names (preserving original case)
+                name_col = next((col for col in df.columns if col.lower() == 'name'), 'NAME')
+                cas_col = next((col for col in df.columns if col.lower() == 'cas'), 'CAS')
                 smiles_col = next((col for col in df.columns if col.lower() == 'smiles'), 'SMILES')
-                df[smiles_col] = df.apply(
-                    lambda r: r[smiles_col] if r[smiles_col] != "" else get_smiles(
-                        r.get(col_mapping.get('name', 'NAME')),
-                        r.get(col_mapping.get('cas', 'CAS'))
-                    ), axis=1
-                )
+
+                # Prepare data for parallel processing
+                rows_to_process = []
+                for idx, row in df.iterrows():
+                    name = str(row.get(name_col, "")) if pd.notna(row.get(name_col)) else ""
+                    cas = str(row.get(cas_col, "")) if pd.notna(row.get(cas_col)) else ""
+                    smiles = str(row.get(smiles_col, "")) if pd.notna(row.get(smiles_col)) else ""
+                    rows_to_process.append((idx, name, cas, smiles))
+
+                # Parallel processing of compound information
+                with ThreadPoolExecutor(max_workers=5) as executor:  # Adjust max_workers as needed
+                    futures = []
+                    for idx, name, cas, smiles in rows_to_process:
+                        futures.append(executor.submit(
+                            self.process_compound_row,
+                            idx, name, cas, smiles, name_col, cas_col, smiles_col, df
+                        ))
+
+                    # Update progress as each future completes
+                    for future in as_completed(futures):
+                        try:
+                            idx, updates = future.result()
+                            for col, value in updates.items():
+                                df.at[idx, col] = value
+                        except Exception as e:
+                            print(f"Error processing row: {e}")
+                            continue
 
                 # Handle Formula column (case-insensitive)
                 formula_col = next((col for col in df.columns if col.lower() == 'formula'), None)
@@ -377,27 +402,47 @@ class CatalogWidget(QWidget):
                 else:
                     df['Formula'] = ""
 
-                def update_formula(row):
-                    if pd.notnull(row.get('Formula')) and str(row.get('Formula')).strip() != "":
-                        return row['Formula']
-                    else:
-                        s = row.get(smiles_col)
-                        if s and isinstance(s, str):
-                            return calculate_formula(s) or ""
+                # Calculate missing formulas from SMILES (parallelized)
+                def process_formula_chunk(chunk):
+                    results = {}
+                    for idx, row in chunk.iterrows():
+                        if pd.notnull(row.get('Formula')) and str(row.get('Formula')).strip() != "":
+                            results[idx] = row['Formula']
                         else:
-                            return ""
+                            s = row.get(smiles_col)
+                            if s and isinstance(s, str):
+                                results[idx] = calculate_formula(s) or ""
+                            else:
+                                results[idx] = ""
+                    return results
 
-                # Apply formula update only to rows with empty Formula
+                # Split dataframe into chunks for parallel processing
                 mask = (df['Formula'].isna()) | (df['Formula'].astype(str).str.strip() == "")
-                df.loc[mask, 'Formula'] = df[mask].apply(update_formula, axis=1)
+                chunks = np.array_split(df[mask], 4)  # Split into 4 chunks
 
-                # Handle category (case-insensitive)
-                df['Category'] = df[smiles_col].apply(
-                    lambda s: categorize_molecule(s) if s and isinstance(s, str) else [])
+                with ThreadPoolExecutor() as executor:
+                    future_to_chunk = {executor.submit(process_formula_chunk, chunk): chunk for chunk in chunks}
+                    for future in as_completed(future_to_chunk):
+                        chunk_results = future.result()
+                        for idx, formula in chunk_results.items():
+                            df.at[idx, 'Formula'] = formula
 
-                # Handle structure image
-                df['StructureImage'] = df[smiles_col].apply(
-                    lambda s: generate_structure_image(s) if s and isinstance(s, str) else None)
+                # Handle category (parallelized)
+                smiles_list = df[smiles_col].tolist()
+                with ThreadPoolExecutor() as executor:
+                    categories = list(executor.map(
+                        lambda s: categorize_molecule(s) if s and isinstance(s, str) else [],
+                        smiles_list
+                    ))
+                df['Category'] = categories
+
+                # Handle structure image (parallelized)
+                with ThreadPoolExecutor() as executor:
+                    structure_images = list(executor.map(
+                        lambda s: generate_structure_image(s) if s and isinstance(s, str) else None,
+                        smiles_list
+                    ))
+                df['StructureImage'] = structure_images
 
                 # Handle date added (case-insensitive)
                 date_col = next((col for col in df.columns if col.lower() == 'date added'), None)
@@ -407,8 +452,45 @@ class CatalogWidget(QWidget):
                 self.data = pd.concat([self.data, df], ignore_index=True)
                 self.populate_views()
                 self.save_catalog(silent=True)
+
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Error importing CSV: {e}")
+
+    def process_compound_row(self, idx, name, cas, smiles, name_col, cas_col, smiles_col, df):
+        """Process a single compound row and return updates"""
+        updates = {}
+
+        # If we have SMILES, use that as the primary identifier
+        if smiles and is_valid_smiles(smiles):
+            compound_data = fetch_compound_info(smiles)
+        # Otherwise try CAS if available
+        elif cas and is_valid_cas(cas):
+            compound_data = fetch_compound_info(cas)
+        # Finally try name if nothing else works
+        elif name:
+            compound_data = fetch_compound_info(name)
+        else:
+            return idx, updates  # Skip if no valid identifiers
+
+        if compound_data:
+            # Update missing fields with fetched data
+            if not smiles and compound_data.get("SMILES"):
+                updates[smiles_col] = compound_data["SMILES"]
+                smiles = compound_data["SMILES"]  # Update for subsequent processing
+
+            if not name and compound_data.get("NAME"):
+                updates[name_col] = compound_data["NAME"]
+
+            if not cas and compound_data.get("CAS"):
+                updates[cas_col] = compound_data["CAS"]
+
+            # If we still don't have SMILES but have name or CAS, try to get it
+            if not smiles and (name or cas):
+                fetched_smiles = get_smiles(name, cas)
+                if fetched_smiles:
+                    updates[smiles_col] = fetched_smiles
+
+        return idx, updates
 
     def add_by_identifier(self):
         text, ok = QInputDialog.getMultiLineText(self, None,
