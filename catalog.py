@@ -6,7 +6,7 @@ import pandas as pd
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QProgressDialog
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QMenu,
     QLabel, QTableWidgetItem, QHeaderView, QInputDialog, QListWidget, QListWidgetItem, QDialog, QDialogButtonBox,
@@ -340,32 +340,43 @@ class CatalogWidget(QWidget):
             self, "Import CSV", "", "CSV Files (*.csv);;All Files (*)", options=options)
 
         if fileName:
+            progress = None
             try:
-                # Read CSV and standardize column names (case-insensitive)
+                # Create progress dialog
+                progress = QProgressDialog("Importing CSV...", "", 0, 0, self)
+                progress.setCancelButton(None)  # Explicitly remove the cancel button
+                progress.setWindowModality(Qt.WindowModal)
+                progress.setWindowTitle("Import Progress")
+                progress.setAutoClose(True)
+                progress.setAutoReset(True)
+
+                # Read CSV and standardize column names
+                progress.setLabelText("Reading CSV file...")
                 df = pd.read_csv(fileName)
 
                 # Create a mapping of lowercase column names to original names
                 col_mapping = {col.lower(): col for col in df.columns}
 
-                # Standardize column names (we'll use lowercase for comparison)
+                # Standardize column names
                 required_cols = ['name', 'cas', 'smiles']
                 remove_cols = [col.lower() for col in REMOVE_COLUMNS]
 
-                # Drop unwanted columns (case-insensitive)
+                # Drop unwanted columns
                 cols_to_drop = [col_mapping[col] for col in remove_cols if col in col_mapping]
                 df = df.drop(columns=cols_to_drop, errors='ignore')
 
-                # Ensure required columns exist (case-insensitive)
+                # Ensure required columns exist
                 for col in required_cols:
                     if col not in col_mapping:
                         df[col.upper()] = ""
 
-                # Get the actual column names (preserving original case)
+                # Get the actual column names
                 name_col = next((col for col in df.columns if col.lower() == 'name'), 'NAME')
                 cas_col = next((col for col in df.columns if col.lower() == 'cas'), 'CAS')
                 smiles_col = next((col for col in df.columns if col.lower() == 'smiles'), 'SMILES')
 
                 # Prepare data for parallel processing
+                progress.setLabelText("Preparing data for processing...")
                 rows_to_process = []
                 for idx, row in df.iterrows():
                     name = str(row.get(name_col, "")) if pd.notna(row.get(name_col)) else ""
@@ -373,8 +384,15 @@ class CatalogWidget(QWidget):
                     smiles = str(row.get(smiles_col, "")) if pd.notna(row.get(smiles_col)) else ""
                     rows_to_process.append((idx, name, cas, smiles))
 
+                # Set up progress bar with actual count
+                total_rows = len(rows_to_process)
+                progress.setMaximum(total_rows)
+                progress.setLabelText(f"Processing compounds (0/{total_rows})")
+
                 # Parallel processing of compound information
-                with ThreadPoolExecutor(max_workers=5) as executor:  # Adjust max_workers as needed
+                processed_rows = 0
+
+                with ThreadPoolExecutor(max_workers=5) as executor:
                     futures = []
                     for idx, name, cas, smiles in rows_to_process:
                         futures.append(executor.submit(
@@ -388,21 +406,29 @@ class CatalogWidget(QWidget):
                             idx, updates = future.result()
                             for col, value in updates.items():
                                 df.at[idx, col] = value
+
+                            processed_rows += 1
+                            progress.setValue(processed_rows)
+                            progress.setLabelText(f"Processing compounds ({processed_rows}/{total_rows})")
+                            if progress.wasCanceled():
+                                raise Exception("Import canceled by user")
+
                         except Exception as e:
                             print(f"Error processing row: {e}")
                             continue
 
-                # Handle Formula column (case-insensitive)
+                # Handle Formula column
+                progress.setLabelText("Calculating formulas...")
+                progress.setRange(0, 0)  # Set back to indeterminate mode
                 formula_col = next((col for col in df.columns if col.lower() == 'formula'), None)
                 if formula_col:
-                    # Rename to standard 'Formula' if it exists with different case
                     if formula_col != 'Formula':
                         df['Formula'] = df[formula_col]
                         df = df.drop(columns=[formula_col])
                 else:
                     df['Formula'] = ""
 
-                # Calculate missing formulas from SMILES (parallelized)
+                # Calculate missing formulas from SMILES
                 def process_formula_chunk(chunk):
                     results = {}
                     for idx, row in chunk.iterrows():
@@ -416,9 +442,8 @@ class CatalogWidget(QWidget):
                                 results[idx] = ""
                     return results
 
-                # Split dataframe into chunks for parallel processing
                 mask = (df['Formula'].isna()) | (df['Formula'].astype(str).str.strip() == "")
-                chunks = np.array_split(df[mask], 4)  # Split into 4 chunks
+                chunks = np.array_split(df[mask], 4)
 
                 with ThreadPoolExecutor() as executor:
                     future_to_chunk = {executor.submit(process_formula_chunk, chunk): chunk for chunk in chunks}
@@ -427,7 +452,8 @@ class CatalogWidget(QWidget):
                         for idx, formula in chunk_results.items():
                             df.at[idx, 'Formula'] = formula
 
-                # Handle category (parallelized)
+                # Handle category
+                progress.setLabelText("Categorizing molecules...")
                 smiles_list = df[smiles_col].tolist()
                 with ThreadPoolExecutor() as executor:
                     categories = list(executor.map(
@@ -436,7 +462,8 @@ class CatalogWidget(QWidget):
                     ))
                 df['Category'] = categories
 
-                # Handle structure image (parallelized)
+                # Handle structure image
+                progress.setLabelText("Generating structure images...")
                 with ThreadPoolExecutor() as executor:
                     structure_images = list(executor.map(
                         lambda s: generate_structure_image(s) if s and isinstance(s, str) else None,
@@ -444,7 +471,7 @@ class CatalogWidget(QWidget):
                     ))
                 df['StructureImage'] = structure_images
 
-                # Handle date added (case-insensitive)
+                # Handle date added
                 date_col = next((col for col in df.columns if col.lower() == 'date added'), None)
                 if not date_col:
                     df['Date Added'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -453,8 +480,17 @@ class CatalogWidget(QWidget):
                 self.populate_views()
                 self.save_catalog(silent=True)
 
+                progress.close()
+
+
             except Exception as e:
+
                 QMessageBox.critical(self, "Error", f"Error importing CSV: {e}")
+
+            finally:
+
+                if progress is not None:
+                    progress.close()
 
     def process_compound_row(self, idx, name, cas, smiles, name_col, cas_col, smiles_col, df):
         """Process a single compound row and return updates"""
