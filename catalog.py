@@ -1,7 +1,6 @@
 import concurrent.futures
 import os
 
-import numpy as np
 import pandas as pd
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
@@ -20,46 +19,27 @@ from smiles_fetch import *
 
 class CatalogWidget(QWidget):
 
-    def __init__(self, catalog_name, file_path, data=None, parent=None):
+    def __init__(self, catalog_name, file_path, qApplication, data=None, parent=None):
         super().__init__(parent)
+        self.qApplication = qApplication
         self.catalog_name = catalog_name
         self.file_path = file_path
         default_cols = DEFAULT_COLS
 
-        # Initialize data
+        # Initialize data - no processing here
         if data is None or data.empty:
             self.data = pd.DataFrame(columns=default_cols)
         else:
             self.data = data.copy()
+            # Only convert base64 images to QPixmap if needed
             if "StructureImage" in self.data.columns:
                 self.data["StructureImage"] = self.data["StructureImage"].apply(
-                    lambda b64: base64_to_pixmap(b64) if isinstance(b64, str) else None
+                    lambda img: base64_to_pixmap(img) if isinstance(img, str) else img
                 )
+            # Ensure all default columns exist
             for col in default_cols:
                 if col not in self.data.columns:
                     self.data[col] = ""
-
-        # Process SMILES data
-        if "SMILES" in self.data.columns:
-            self.data["SMILES"] = self.data.apply(
-                lambda r: r["SMILES"] if r["SMILES"] != "" else get_smiles(r.get("SMILES"), r.get("CAS")),
-                axis=1
-            )
-
-            def update_formula(row):
-                if pd.notnull(row.get("Formula")) and str(row.get("Formula")).strip() != "":
-                    return row["Formula"]
-                else:
-                    s = row.get("SMILES")
-                    if s and isinstance(s, str):
-                        return calculate_formula(s) or ""
-                    else:
-                        return ""
-
-            self.data["Formula"] = self.data.apply(update_formula, axis=1)
-            self.data["Category"] = self.data["SMILES"].apply(
-                lambda s: categorize_molecule(s) if s and isinstance(s, str) else []
-            )
 
         self.last_sorted_column = None
         self.last_sort_order = True
@@ -68,8 +48,258 @@ class CatalogWidget(QWidget):
         # Initialize UI
         self.initUI()
 
-        # Now that UI (including table) is initialized, populate it
+        # Populate views with existing data
         self.populate_views()
+
+    def populate_views(self):
+        self._updating_table = True
+        self.table.blockSignals(True)
+        self.populate_table()
+        self.populate_grid_view()
+        self.table.blockSignals(False)
+        self._updating_table = False
+        self.filter_view()
+
+    def populate_table(self):
+        self.table.clear()
+        cols = [col for col in self.data.columns if col != "StructureImage"]
+        if "Structure" not in cols:
+            cols.append("Structure")
+        self.table.setColumnCount(len(cols))
+        self.table.setHorizontalHeaderLabels(cols)
+        self.table.setRowCount(len(self.data))
+
+        for i, (_, row) in enumerate(self.data.iterrows()):
+            row_dict = row.to_dict()
+            for j, col in enumerate(cols):
+                if col == "Structure":
+                    smiles = row.get("SMILES", "")
+                    pixmap = row.get("StructureImage")
+                    if pixmap is None and smiles:  # Only generate if missing
+                        pixmap = generate_structure_image(smiles)
+                        self.data.at[i, "StructureImage"] = pixmap  # Cache for future use
+
+                    if pixmap:
+                        lbl = ClickableLabel()
+                        lbl.setPixmap(pixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                        lbl.setAlignment(Qt.AlignCenter)
+                        details = "\n".join(f"{k}: {v}" for k, v in row_dict.items() if k != "StructureImage")
+                        lbl.setToolTip(details)
+                        lbl.clicked.connect(lambda pix=pixmap: self.show_enlarged_image(pix))
+                        self.table.setCellWidget(i, j, lbl)
+                    else:
+                        item = QTableWidgetItem("N/A")
+                        item.setTextAlignment(Qt.AlignCenter)
+                        self.table.setItem(i, j, item)
+                else:
+                    val = row_dict.get(col, "")
+                    item = QTableWidgetItem(str(val))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    if j == 0:
+                        item.setData(Qt.UserRole, row_dict)
+                    self.table.setItem(i, j, item)
+            self.table.setRowHeight(i, 160)
+
+        # Adjust column widths
+        for i in range(self.table.columnCount()):
+            colName = self.table.horizontalHeaderItem(i).text()
+            if colName == "NAME":
+                self.table.setColumnWidth(i, 200)
+            elif colName == "CAS":
+                self.table.setColumnWidth(i, 140)
+            elif colName == "SMILES":
+                self.table.setColumnWidth(i, 150)
+            elif colName == "Formula":
+                self.table.setColumnWidth(i, 150)
+            elif colName == "Category":
+                self.table.hideColumn(i)
+            elif colName == "Date Added":
+                self.table.setColumnWidth(i, 140)
+            elif colName == "Detail":
+                self.table.setColumnWidth(i, 140)
+            elif colName == "Structure":
+                self.table.setColumnWidth(i, 320)
+
+    def import_csv(self):
+        options = QFileDialog.Options()
+        fileName, _ = QFileDialog.getOpenFileName(
+            self, "Import CSV", "", "CSV Files (*.csv);;All Files (*)", options=options)
+
+        if not fileName:
+            return
+
+        progress = QProgressDialog("Importing CSV...", "", 0, 0, self)
+        progress.setCancelButton(None)
+        progress.setWindowModality(Qt.WindowModal)
+        progress.setWindowTitle("Import Progress")
+
+        try:
+            # Read CSV file
+            progress.setLabelText("Reading CSV file...")
+            self.qApplication.processEvents()
+
+            df = pd.read_csv(fileName)
+            processed_df = self.process_import_data(df, progress)
+
+            # Merge with existing data
+            self.data = pd.concat([self.data, processed_df], ignore_index=True)
+            self.populate_views()
+            self.save_catalog(silent=True)
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error importing CSV: {e}")
+        finally:
+            progress.close()
+
+    def process_import_data(self, df, progress):
+        """Process new import data with all required computations"""
+        # Standardize column names
+        col_mapping = {col.lower(): col for col in df.columns}
+
+        # Define default column names
+        name_col = 'NAME'
+        cas_col = 'CAS'
+        smiles_col = 'SMILES'
+
+        # Map to actual column names in the dataframe
+        name_col = col_mapping.get('name', name_col)
+        cas_col = col_mapping.get('cas', cas_col)
+        smiles_col = col_mapping.get('smiles', smiles_col)
+
+        # Ensure required columns exist
+        for col in ['name', 'cas', 'smiles']:
+            if col not in col_mapping:
+                df[col.upper()] = ""
+
+        # Drop unwanted columns
+        remove_cols = [col.lower() for col in REMOVE_COLUMNS]
+        cols_to_drop = [col_mapping[col] for col in remove_cols if col in col_mapping]
+        df = df.drop(columns=cols_to_drop, errors='ignore')
+
+        # Process rows in parallel
+        progress.setLabelText("Processing compounds...")
+        total_rows = len(df)
+        progress.setMaximum(total_rows)
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            # Process basic compound info
+            futures = []
+            for _, row in df.iterrows():
+                futures.append(executor.submit(
+                    self.process_compound_row,
+                    row,
+                    name_col,
+                    cas_col,
+                    smiles_col
+                ))
+
+            # Update progress and collect results
+            results = []
+            for i, future in enumerate(as_completed(futures)):
+                progress.setValue(i + 1)
+                progress.setLabelText(f"Processing compounds ({i + 1}/{total_rows})")
+                self.qApplication.processEvents()
+                results.append(future.result())
+
+            # Apply updates to dataframe
+            for idx, updates in results:
+                for col, value in updates.items():
+                    df.at[idx, col] = value
+
+        # Rest of the method remains the same...
+        progress.setLabelText("Calculating formulas...")
+        progress.setRange(0, 0)
+        df['Formula'] = df.apply(self.calculate_formula_row, axis=1, args=(smiles_col,))
+
+        progress.setLabelText("Categorizing molecules...")
+        df['Category'] = df[smiles_col].apply(
+            lambda s: categorize_molecule(s) if s and isinstance(s, str) else []
+        )
+
+        progress.setLabelText("Generating structure images...")
+        df['StructureImage'] = df[smiles_col].apply(
+            lambda s: generate_structure_image(s) if s and isinstance(s, str) else None
+        )
+
+        if 'Date Added' not in df.columns:
+            df['Date Added'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        return df
+
+        # ... (rest of the method remains the same)
+
+    def calculate_formula_row(self, row, smiles_col):
+        """Calculate formula for a single row"""
+        if pd.notnull(row.get('Formula')) and str(row.get('Formula')).strip() != "":
+            return row['Formula']
+        s = row.get(smiles_col)
+        return calculate_formula(s) or "" if s and isinstance(s, str) else ""
+
+    def save_catalog(self, silent=True):
+        try:
+            data_to_save = self.data.copy()
+            if "StructureImage" in data_to_save.columns:
+                data_to_save["StructureImage"] = data_to_save["StructureImage"].apply(
+                    lambda pix: pixmap_to_base64(pix) if pix and isinstance(pix, QPixmap) else None
+                )
+            data_to_save.to_json(self.file_path, orient="records", indent=2)
+        except Exception as e:
+            if not silent:
+                QMessageBox.critical(self, "Error", f"Could not save catalog: {e}")
+
+    def populate_grid_view(self):
+        self.gridView.clear()
+        if self.data.empty:
+            return
+        for _, row in self.data.iterrows():
+            pixmap = row.get("StructureImage")
+            if pixmap:
+                item = QListWidgetItem()
+                item.setIcon(QIcon(pixmap))
+                item.setText("")
+                details = "\n".join(f"{k}: {v}" for k, v in row.to_dict().items() if k != "StructureImage")
+                item.setToolTip(details)
+                item.setData(Qt.UserRole, row.to_dict())
+                self.gridView.addItem(item)
+
+    def process_compound_row(self, row, name_col, cas_col, smiles_col):
+        """Process a single compound row and return updates"""
+        updates = {}
+        name = str(row.get(name_col, "")) if pd.notna(row.get(name_col)) else ""
+        cas = str(row.get(cas_col, "")) if pd.notna(row.get(cas_col)) else ""
+        smiles = str(row.get(smiles_col, "")) if pd.notna(row.get(smiles_col)) else ""
+
+        # If we have SMILES, use that as the primary identifier
+        if smiles and is_valid_smiles(smiles):
+            compound_data = fetch_compound_info(smiles)
+        # Otherwise try CAS if available
+        elif cas and is_valid_cas(cas):
+            compound_data = fetch_compound_info(cas)
+        # Finally try name if nothing else works
+        elif name:
+            compound_data = fetch_compound_info(name)
+        else:
+            return row.name, updates  # Return the index and empty updates
+
+        if compound_data:
+            # Update missing fields with fetched data
+            if not smiles and compound_data.get("SMILES"):
+                updates[smiles_col] = compound_data["SMILES"]
+                smiles = compound_data["SMILES"]  # Update for subsequent processing
+
+            if not name and compound_data.get("NAME"):
+                updates[name_col] = compound_data["NAME"]
+
+            if not cas and compound_data.get("CAS"):
+                updates[cas_col] = compound_data["CAS"]
+
+            # If we still don't have SMILES but have name or CAS, try to get it
+            if not smiles and (name or cas):
+                fetched_smiles = get_smiles(name, cas)
+                if fetched_smiles:
+                    updates[smiles_col] = fetched_smiles
+
+        return row.name, updates  # Return the index and updates
 
     def initUI(self):
         self.layout = QVBoxLayout(self)
@@ -145,87 +375,6 @@ class CatalogWidget(QWidget):
         self.viewStack.addWidget(self.gridView)
         self.viewStack.setCurrentIndex(0)
         self.layout.addWidget(self.viewStack)
-
-    def populate_views(self):
-        self._updating_table = True
-        self.table.blockSignals(True)
-        self.populate_table()
-        self.populate_grid_view()
-        self.table.blockSignals(False)
-        self._updating_table = False
-        self.filter_view()
-
-    def populate_table(self):
-        self.table.clear()
-        cols = [col for col in self.data.columns if col != "StructureImage"]
-        if "Structure" not in cols:
-            cols.append("Structure")
-        self.table.setColumnCount(len(cols))
-        self.table.setHorizontalHeaderLabels(cols)
-        self.table.setRowCount(len(self.data))
-        for i, (_, row) in enumerate(self.data.iterrows()):
-            row_dict = row.to_dict()
-            for j, col in enumerate(cols):
-                if col == "Structure":
-                    smiles = row.get("SMILES", "")
-                    pixmap = row.get("StructureImage") if pd.notna(
-                        row.get("StructureImage")) else generate_structure_image(smiles)
-                    if pixmap:
-                        lbl = ClickableLabel()
-                        # Scale image to 150x150 so that it fits comfortably
-                        lbl.setPixmap(pixmap.scaled(150, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-                        lbl.setAlignment(Qt.AlignCenter)
-                        details = "\n".join(f"{k}: {v}" for k, v in row_dict.items() if k != "StructureImage")
-                        lbl.setToolTip(details)
-                        lbl.clicked.connect(lambda pix=pixmap: self.show_enlarged_image(pix))
-                        self.table.setCellWidget(i, j, lbl)
-                    else:
-                        item = QTableWidgetItem("N/A")
-                        item.setTextAlignment(Qt.AlignCenter)
-                        self.table.setItem(i, j, item)
-                else:
-                    val = row_dict.get(col, "")
-                    item = QTableWidgetItem(str(val))
-                    item.setTextAlignment(Qt.AlignCenter)
-                    if j == 0:
-                        item.setData(Qt.UserRole, row_dict)
-                    self.table.setItem(i, j, item)
-            self.table.setRowHeight(i, 160)
-        # Adjust column widths per our specifications.
-        for i in range(self.table.columnCount()):
-            colName = self.table.horizontalHeaderItem(i).text()
-            if colName == "NAME":
-                self.table.setColumnWidth(i, 200)
-            elif colName == "CAS":
-                self.table.setColumnWidth(i, 140)
-            elif colName == "SMILES":
-                self.table.setColumnWidth(i, 150)
-            elif colName == "Formula":
-                self.table.setColumnWidth(i, 150)
-            elif colName == "Category":
-                # Hide the Category column but retain functionality.
-                self.table.hideColumn(i)
-            elif colName == "Date Added":
-                self.table.setColumnWidth(i, 140)
-            elif colName == "Detail":
-                self.table.setColumnWidth(i, 140)
-            elif colName == "Structure":
-                self.table.setColumnWidth(i, 320)
-
-    def populate_grid_view(self):
-        self.gridView.clear()
-        if self.data.empty:
-            return
-        for _, row in self.data.iterrows():
-            pixmap = row.get("StructureImage")
-            if pixmap:
-                item = QListWidgetItem()
-                item.setIcon(QIcon(pixmap))
-                item.setText("")
-                details = "\n".join(f"{k}: {v}" for k, v in row.to_dict().items() if k != "StructureImage")
-                item.setToolTip(details)
-                item.setData(Qt.UserRole, row.to_dict())
-                self.gridView.addItem(item)
 
     def row_passes_filter(self, row_data, search_text, sel_cat, major_filter):
         if search_text:
@@ -334,200 +483,6 @@ class CatalogWidget(QWidget):
             self.populate_views()
             self.save_catalog(silent=True)
 
-    def import_csv(self):
-        options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(
-            self, "Import CSV", "", "CSV Files (*.csv);;All Files (*)", options=options)
-
-        if fileName:
-            progress = None
-            try:
-                # Create progress dialog
-                progress = QProgressDialog("Importing CSV...", "", 0, 0, self)
-                progress.setCancelButton(None)  # Explicitly remove the cancel button
-                progress.setWindowModality(Qt.WindowModal)
-                progress.setWindowTitle("Import Progress")
-                progress.setAutoClose(True)
-                progress.setAutoReset(True)
-
-                # Read CSV and standardize column names
-                progress.setLabelText("Reading CSV file...")
-                df = pd.read_csv(fileName)
-
-                # Create a mapping of lowercase column names to original names
-                col_mapping = {col.lower(): col for col in df.columns}
-
-                # Standardize column names
-                required_cols = ['name', 'cas', 'smiles']
-                remove_cols = [col.lower() for col in REMOVE_COLUMNS]
-
-                # Drop unwanted columns
-                cols_to_drop = [col_mapping[col] for col in remove_cols if col in col_mapping]
-                df = df.drop(columns=cols_to_drop, errors='ignore')
-
-                # Ensure required columns exist
-                for col in required_cols:
-                    if col not in col_mapping:
-                        df[col.upper()] = ""
-
-                # Get the actual column names
-                name_col = next((col for col in df.columns if col.lower() == 'name'), 'NAME')
-                cas_col = next((col for col in df.columns if col.lower() == 'cas'), 'CAS')
-                smiles_col = next((col for col in df.columns if col.lower() == 'smiles'), 'SMILES')
-
-                # Prepare data for parallel processing
-                progress.setLabelText("Preparing data for processing...")
-                rows_to_process = []
-                for idx, row in df.iterrows():
-                    name = str(row.get(name_col, "")) if pd.notna(row.get(name_col)) else ""
-                    cas = str(row.get(cas_col, "")) if pd.notna(row.get(cas_col)) else ""
-                    smiles = str(row.get(smiles_col, "")) if pd.notna(row.get(smiles_col)) else ""
-                    rows_to_process.append((idx, name, cas, smiles))
-
-                # Set up progress bar with actual count
-                total_rows = len(rows_to_process)
-                progress.setMaximum(total_rows)
-                progress.setLabelText(f"Processing compounds (0/{total_rows})")
-
-                # Parallel processing of compound information
-                processed_rows = 0
-
-                with ThreadPoolExecutor(max_workers=5) as executor:
-                    futures = []
-                    for idx, name, cas, smiles in rows_to_process:
-                        futures.append(executor.submit(
-                            self.process_compound_row,
-                            idx, name, cas, smiles, name_col, cas_col, smiles_col, df
-                        ))
-
-                    # Update progress as each future completes
-                    for future in as_completed(futures):
-                        try:
-                            idx, updates = future.result()
-                            for col, value in updates.items():
-                                df.at[idx, col] = value
-
-                            processed_rows += 1
-                            progress.setValue(processed_rows)
-                            progress.setLabelText(f"Processing compounds ({processed_rows}/{total_rows})")
-                            if progress.wasCanceled():
-                                raise Exception("Import canceled by user")
-
-                        except Exception as e:
-                            print(f"Error processing row: {e}")
-                            continue
-
-                # Handle Formula column
-                progress.setLabelText("Calculating formulas...")
-                progress.setRange(0, 0)  # Set back to indeterminate mode
-                formula_col = next((col for col in df.columns if col.lower() == 'formula'), None)
-                if formula_col:
-                    if formula_col != 'Formula':
-                        df['Formula'] = df[formula_col]
-                        df = df.drop(columns=[formula_col])
-                else:
-                    df['Formula'] = ""
-
-                # Calculate missing formulas from SMILES
-                def process_formula_chunk(chunk):
-                    results = {}
-                    for idx, row in chunk.iterrows():
-                        if pd.notnull(row.get('Formula')) and str(row.get('Formula')).strip() != "":
-                            results[idx] = row['Formula']
-                        else:
-                            s = row.get(smiles_col)
-                            if s and isinstance(s, str):
-                                results[idx] = calculate_formula(s) or ""
-                            else:
-                                results[idx] = ""
-                    return results
-
-                mask = (df['Formula'].isna()) | (df['Formula'].astype(str).str.strip() == "")
-                chunks = np.array_split(df[mask], 4)
-
-                with ThreadPoolExecutor() as executor:
-                    future_to_chunk = {executor.submit(process_formula_chunk, chunk): chunk for chunk in chunks}
-                    for future in as_completed(future_to_chunk):
-                        chunk_results = future.result()
-                        for idx, formula in chunk_results.items():
-                            df.at[idx, 'Formula'] = formula
-
-                # Handle category
-                progress.setLabelText("Categorizing molecules...")
-                smiles_list = df[smiles_col].tolist()
-                with ThreadPoolExecutor() as executor:
-                    categories = list(executor.map(
-                        lambda s: categorize_molecule(s) if s and isinstance(s, str) else [],
-                        smiles_list
-                    ))
-                df['Category'] = categories
-
-                # Handle structure image
-                progress.setLabelText("Generating structure images...")
-                with ThreadPoolExecutor() as executor:
-                    structure_images = list(executor.map(
-                        lambda s: generate_structure_image(s) if s and isinstance(s, str) else None,
-                        smiles_list
-                    ))
-                df['StructureImage'] = structure_images
-
-                # Handle date added
-                date_col = next((col for col in df.columns if col.lower() == 'date added'), None)
-                if not date_col:
-                    df['Date Added'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-                self.data = pd.concat([self.data, df], ignore_index=True)
-                self.populate_views()
-                self.save_catalog(silent=True)
-
-                progress.close()
-
-
-            except Exception as e:
-
-                QMessageBox.critical(self, "Error", f"Error importing CSV: {e}")
-
-            finally:
-
-                if progress is not None:
-                    progress.close()
-
-    def process_compound_row(self, idx, name, cas, smiles, name_col, cas_col, smiles_col, df):
-        """Process a single compound row and return updates"""
-        updates = {}
-
-        # If we have SMILES, use that as the primary identifier
-        if smiles and is_valid_smiles(smiles):
-            compound_data = fetch_compound_info(smiles)
-        # Otherwise try CAS if available
-        elif cas and is_valid_cas(cas):
-            compound_data = fetch_compound_info(cas)
-        # Finally try name if nothing else works
-        elif name:
-            compound_data = fetch_compound_info(name)
-        else:
-            return idx, updates  # Skip if no valid identifiers
-
-        if compound_data:
-            # Update missing fields with fetched data
-            if not smiles and compound_data.get("SMILES"):
-                updates[smiles_col] = compound_data["SMILES"]
-                smiles = compound_data["SMILES"]  # Update for subsequent processing
-
-            if not name and compound_data.get("NAME"):
-                updates[name_col] = compound_data["NAME"]
-
-            if not cas and compound_data.get("CAS"):
-                updates[cas_col] = compound_data["CAS"]
-
-            # If we still don't have SMILES but have name or CAS, try to get it
-            if not smiles and (name or cas):
-                fetched_smiles = get_smiles(name, cas)
-                if fetched_smiles:
-                    updates[smiles_col] = fetched_smiles
-
-        return idx, updates
-
     def add_by_identifier(self):
         text, ok = QInputDialog.getMultiLineText(self, None,
                                                  "Add by CAS, SMILES or IUPAC, accepts multiple identifiers, separated by newline or white space")
@@ -613,17 +568,6 @@ class CatalogWidget(QWidget):
                     QMessageBox.information(self, "Exported", "Catalog exported successfully!")
                 except Exception as e:
                     QMessageBox.critical(self, "Error", f"Error exporting PDF: {e}")
-
-    def save_catalog(self, silent=True):
-        try:
-            data_to_save = self.data.copy()
-            if "StructureImage" in data_to_save.columns:
-                data_to_save["StructureImage"] = data_to_save["StructureImage"].apply(
-                    lambda pix: pixmap_to_base64(pix) if pix and isinstance(pix, QPixmap) else None
-                )
-            data_to_save.to_json(self.file_path, orient="records", indent=2)
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"Could not save catalog: {e}")
 
     def show_enlarged_image(self, pixmap):
         dlg = QDialog(self)

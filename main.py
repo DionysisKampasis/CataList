@@ -97,8 +97,9 @@ class CustomListWidget(QListWidget):
 
 class MainWindow(QMainWindow):
 
-    def __init__(self):
+    def __init__(self, qApplication):
         super().__init__()
+        self.qApplication = qApplication
         self.setWindowTitle("Chemical Catalog Manager")
         self.resize(1200, 800)
         self.catalog_files = {}  # catalog name -> file path
@@ -144,7 +145,7 @@ class MainWindow(QMainWindow):
                 self.listCatalogs.addItem(name)
 
     def open_catalog(self, name, path, df):
-        widget = CatalogWidget(name, path, df)
+        widget = CatalogWidget(name, path, self.qApplication, data=df)
         self.tabWidget.addTab(widget, name)
         self.tabWidget.setCurrentWidget(widget)
         self.open_catalog_tabs[name] = widget
@@ -161,7 +162,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     model = CatalogModel()
-    view = MainWindow()
+    view = MainWindow(app)
     controller = CatalogController(model, view)
     view.show()
     sys.exit(app.exec_())
