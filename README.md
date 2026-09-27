@@ -28,6 +28,8 @@ Please consider supporting our cause by donating [here](https://paypal.me/Chemis
 
 It automatically translates standard chemical identifiers into structures, calculates molecular properties, and standardizes your data.
 
+<img width="865" height="316" alt="image" src="https://github.com/user-attachments/assets/275ca692-fd7c-4d35-bb6a-3971b994d3fa" />
+
 ---
 
 # 1. Core Capabilities
@@ -108,12 +110,16 @@ Switch between:
 - **Table View** (spreadsheet style)
 - **Grid View** (visual card layout)
 
+<img width="865" height="501" alt="image" src="https://github.com/user-attachments/assets/575c1264-7b86-4bcf-9776-7a24032fc9c2" />
+
 ### Detailed View
 Double-click any chemical structure image to:
 
 - View all data fields
 - Perform manual edits
 - Copy high-resolution structure image to clipboard
+
+<img width="198" height="280" alt="image" src="https://github.com/user-attachments/assets/1c377eb4-a37e-4cac-b756-4154e039b2b7" />
 
 ---
 
@@ -143,6 +149,8 @@ Reverts:
 
 As a single unified action.
 
+<img width="878" height="507" alt="image" src="https://github.com/user-attachments/assets/38f85824-8ab5-451a-a002-e5362d070758" />
+
 ### Restore Default
 Right-click a row → **Restore Default**
 
@@ -165,6 +173,8 @@ CataList creates a consolidated **Properties** column containing:
 
 Use the **Sort** dropdown to order inventory numerically (e.g., MW Ascending).
 
+<img width="865" height="499" alt="image" src="https://github.com/user-attachments/assets/a88f98fa-17e7-4a4a-8fa5-f7c057a163c9" />
+
 ---
 
 ## 2.5 Searching and Filtering
@@ -179,6 +189,8 @@ Filter instantly by:
 Use dropdown checklist to filter by chemical class:
 - e.g., "Aldehyde" AND "Halogen"
 
+<img width="3674" height="2116" alt="Picture65" src="https://github.com/user-attachments/assets/0258d16f-d1c7-43c4-8ac4-a611cc65b7ca" />
+
 ### ⚠ Missing Info
 Enable **Missing Info** checkbox to identify unresolved rows.
 
@@ -189,6 +201,8 @@ Enable **Missing Info** checkbox to identify unresolved rows.
    - Exact
    - Substructure
    - Similarity search
+
+<img width="865" height="497" alt="image" src="https://github.com/user-attachments/assets/a30d2ec7-192a-4a13-a024-e107fbb77a9e" />
 
 ---
 
@@ -204,6 +218,8 @@ CataList automatically saves catalogs, but keeping external backups is recommend
 - `.xlsx`
 
 Exporting to Excel (`.xlsx`) generates a formatted spreadsheet including embedded 2D structure images.
+
+<img width="889" height="563" alt="image" src="https://github.com/user-attachments/assets/be91d49d-fab6-4358-b6f9-3e354c9357aa" />
 
 ---
 
