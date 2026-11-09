@@ -18,7 +18,7 @@ $$ |  $$\ $$  __$$ | $$ |$$\ $$  __$$ |$$ |      $$ | \____$$\   $$ |$$\
 
 ## About ChemIsFree
 
-Please consider supporting our cause by donating [here](https://paypal.me/Chemisfree)! **ChemIsFree** is a collaborative project dedicated to creating and/or curating free/open-source chemistry tools. For more information, feel free to check out our [website]https://chemisfree.github.io/website/index.html (still under development) reach out via e-mail on chemisfree2026@gmail.com or [LinkedIn](https://www.linkedin.com/company/chemisfree).
+Please consider supporting our cause by donating [here](https://paypal.me/Chemisfree)! **ChemIsFree** is a collaborative project dedicated to creating and/or curating free/open-source chemistry tools. For more information, feel free to check out our website https://chemisfree.github.io/website/index.html (still under development) reach out via e-mail on chemisfree2026@gmail.com or [LinkedIn](https://www.linkedin.com/company/chemisfree).
 
 ---
 
